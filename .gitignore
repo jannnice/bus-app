@@ -1,0 +1,31 @@
+# macOS
+.DS_Store
+
+# Local secrets and environment files
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.p12
+*.mobileprovision
+
+# IntelliJ IDEA and VS Code
+.idea/
+*.iml
+.vscode/
+
+# Gradle and Java build output
+.gradle/
+build/
+out/
+*.class
+
+# Xcode and Swift build output
+DerivedData/
+xcuserdata/
+*.xcuserstate
+.swiftpm/
+
+# Logs
+*.log
