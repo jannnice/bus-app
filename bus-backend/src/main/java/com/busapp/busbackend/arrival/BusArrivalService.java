@@ -17,9 +17,9 @@ public class BusArrivalService {
 		this.ltaArrivalMapper = ltaArrivalMapper;
 	}
 
-	@Cacheable(cacheNames = "busArrivals", key = "#stopCode", sync = true)
-	public BusArrivalResponse getArrivals(String stopCode) {
-		LtaBusArrivalResponse ltaResponse = ltaClient.getBusArrivals(stopCode);
+	@Cacheable(cacheNames = "busArrivals", sync = true)
+	public BusArrivalResponse getArrivals(String stopCode, String serviceNo) {
+		LtaBusArrivalResponse ltaResponse = ltaClient.getBusArrivals(stopCode, serviceNo);
 		return ltaArrivalMapper.toApiResponse(ltaResponse);
 	}
 

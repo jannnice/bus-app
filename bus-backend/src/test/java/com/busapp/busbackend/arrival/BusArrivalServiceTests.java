@@ -13,13 +13,13 @@ class BusArrivalServiceTests {
 	@Test
 	void transformsLtaDataIntoThePublicApiModel() {
 		LtaClient ltaClient = mock(LtaClient.class);
-		given(ltaClient.getBusArrivals("83139")).willReturn(LtaTestResponses.sample());
+		given(ltaClient.getBusArrivals("83139", "15")).willReturn(LtaTestResponses.sample());
 		BusArrivalService busArrivalService = new BusArrivalService(
 				ltaClient,
 				new LtaArrivalMapper()
 		);
 
-		BusArrivalResponse response = busArrivalService.getArrivals("83139");
+		BusArrivalResponse response = busArrivalService.getArrivals("83139", "15");
 
 		assertThat(response.stopCode()).isEqualTo("83139");
 		assertThat(response.services()).hasSize(1);

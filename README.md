@@ -15,6 +15,7 @@ bus-app/
 ## Current backend features
 
 - `GET /api/v1/arrivals/{stopCode}` for live bus arrivals
+- Optional `serviceNo` filtering for a single bus service
 - Typed LTA DataMall client and response models
 - Five-digit bus stop validation
 - Connection and read timeouts for upstream requests
@@ -53,6 +54,12 @@ Request arrivals for a bus stop:
 
 ```bash
 curl http://localhost:8080/api/v1/arrivals/83139
+```
+
+Request arrivals for one service at that stop:
+
+```bash
+curl "http://localhost:8080/api/v1/arrivals/83139?serviceNo=15"
 ```
 
 Check application health:

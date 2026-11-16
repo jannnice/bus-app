@@ -33,13 +33,25 @@ class BusArrivalCachingTests {
 
 	@Test
 	void reusesAnLtaResponseWithinTheCacheWindow() {
-		given(ltaClient.getBusArrivals("83139")).willReturn(LtaTestResponses.sample());
+		given(ltaClient.getBusArrivals("83139", "15")).willReturn(LtaTestResponses.sample());
 
-		BusArrivalResponse first = busArrivalService.getArrivals("83139");
-		BusArrivalResponse second = busArrivalService.getArrivals("83139");
+		BusArrivalResponse first = busArrivalService.getArrivals("83139", "15");
+		BusArrivalResponse second = busArrivalService.getArrivals("83139", "15");
 
 		assertThat(second).isEqualTo(first);
-		verify(ltaClient, times(1)).getBusArrivals("83139");
+		verify(ltaClient, times(1)).getBusArrivals("83139", "15");
+	}
+
+	@Test
+	void keepsFilteredAndUnfilteredRequestsInSeparateCacheEntries() {
+		given(ltaClient.getBusArrivals("83139", null)).willReturn(LtaTestResponses.sample());
+		given(ltaClient.getBusArrivals("83139", "15")).willReturn(LtaTestResponses.sample());
+
+		busArrivalService.getArrivals("83139", null);
+		busArrivalService.getArrivals("83139", "15");
+
+		verify(ltaClient, times(1)).getBusArrivals("83139", null);
+		verify(ltaClient, times(1)).getBusArrivals("83139", "15");
 	}
 
 }
