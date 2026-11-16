@@ -73,13 +73,23 @@ class BusArrivalControllerTests {
 	@Test
 	void rejectsInvalidStopCode() throws Exception {
 		mockMvc.perform(get("/api/v1/arrivals/not-a-stop"))
-				.andExpect(status().isBadRequest());
+				.andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.code").value("INVALID_REQUEST"))
+				.andExpect(jsonPath("$.message")
+						.value("stopCode must contain exactly 5 digits"))
+				.andExpect(jsonPath("$.timestamp").isNotEmpty())
+				.andExpect(jsonPath("$.path").value("/api/v1/arrivals/not-a-stop"));
 	}
 
 	@Test
 	void rejectsInvalidServiceNumber() throws Exception {
 		mockMvc.perform(get("/api/v1/arrivals/83139").queryParam("serviceNo", "15!"))
-				.andExpect(status().isBadRequest());
+				.andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.code").value("INVALID_REQUEST"))
+				.andExpect(jsonPath("$.message")
+						.value("serviceNo must contain 1 to 5 letters or digits"))
+				.andExpect(jsonPath("$.timestamp").isNotEmpty())
+				.andExpect(jsonPath("$.path").value("/api/v1/arrivals/83139"));
 	}
 
 	@Test
@@ -89,7 +99,10 @@ class BusArrivalControllerTests {
 
 		mockMvc.perform(get("/api/v1/arrivals/83139"))
 				.andExpect(status().isBadGateway())
-				.andExpect(jsonPath("$.code").value("LTA_UNAVAILABLE"));
+				.andExpect(jsonPath("$.code").value("LTA_UNAVAILABLE"))
+				.andExpect(jsonPath("$.message").value("Could not reach LTA DataMall"))
+				.andExpect(jsonPath("$.timestamp").isNotEmpty())
+				.andExpect(jsonPath("$.path").value("/api/v1/arrivals/83139"));
 	}
 
 	@Test
@@ -99,7 +112,10 @@ class BusArrivalControllerTests {
 
 		mockMvc.perform(get("/api/v1/arrivals/83139"))
 				.andExpect(status().isServiceUnavailable())
-				.andExpect(jsonPath("$.code").value("LTA_NOT_CONFIGURED"));
+				.andExpect(jsonPath("$.code").value("LTA_NOT_CONFIGURED"))
+				.andExpect(jsonPath("$.message").value("LTA_ACCOUNT_KEY is not configured"))
+				.andExpect(jsonPath("$.timestamp").isNotEmpty())
+				.andExpect(jsonPath("$.path").value("/api/v1/arrivals/83139"));
 	}
 
 }

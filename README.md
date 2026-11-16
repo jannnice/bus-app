@@ -19,7 +19,7 @@ bus-app/
 - Typed LTA DataMall client and response models
 - Five-digit bus stop validation
 - Connection and read timeouts for upstream requests
-- Stable JSON errors for configuration and upstream failures
+- Stable JSON errors for invalid requests, configuration, and upstream failures
 - 20-second in-memory Caffeine cache
 - Actuator health endpoint
 - Unit, controller, HTTP client, context, and caching tests
@@ -67,6 +67,28 @@ Check application health:
 ```bash
 curl http://localhost:8080/actuator/health
 ```
+
+## Error responses
+
+Every handled API error uses the same shape, so clients can make decisions using
+the stable `code` while still showing a useful `message`:
+
+```json
+{
+  "code": "INVALID_REQUEST",
+  "message": "stopCode must contain exactly 5 digits",
+  "timestamp": "2026-11-16T14:30:00Z",
+  "path": "/api/v1/arrivals/not-a-stop"
+}
+```
+
+Current error codes are:
+
+| HTTP status | Code | Meaning |
+| --- | --- | --- |
+| `400` | `INVALID_REQUEST` | A path, query, or request-body value failed validation |
+| `502` | `LTA_UNAVAILABLE` | LTA DataMall could not be reached or rejected the upstream request |
+| `503` | `LTA_NOT_CONFIGURED` | The backend has no LTA account key configured |
 
 ## Run the tests
 
