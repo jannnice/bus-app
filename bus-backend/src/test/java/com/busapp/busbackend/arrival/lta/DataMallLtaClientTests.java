@@ -39,12 +39,35 @@ class DataMallLtaClientTests {
 				.andExpect(header("AccountKey", "test-account-key"))
 				.andRespond(withSuccess(responseJson, MediaType.APPLICATION_JSON));
 
-		LtaBusArrivalResponse response = client.getBusArrivals("83139");
+		LtaBusArrivalResponse response = client.getBusArrivals("83139", null);
 
 		assertThat(response.busStopCode()).isEqualTo("83139");
 		assertThat(response.services()).hasSize(1);
 		assertThat(response.services().getFirst().nextBus().monitored()).isEqualTo(1);
 		assertThat(response.services().getFirst().nextBus3().estimatedArrival()).isEmpty();
+		server.verify();
+	}
+
+	@Test
+	void includesTheOptionalServiceNumberInTheLtaRequest() throws Exception {
+		RestClient.Builder builder = RestClient.builder();
+		MockRestServiceServer server = MockRestServiceServer.bindTo(builder).build();
+		DataMallLtaClient client = new DataMallLtaClient(
+				builder.baseUrl(BASE_URL).build(),
+				properties("test-account-key")
+		);
+		String responseJson = new ClassPathResource("fixtures/lta-bus-arrival.json")
+				.getContentAsString(StandardCharsets.UTF_8);
+
+		server.expect(once(), requestTo(
+				BASE_URL + "/v3/BusArrival?BusStopCode=83139&ServiceNo=15"
+		))
+				.andExpect(method(HttpMethod.GET))
+				.andRespond(withSuccess(responseJson, MediaType.APPLICATION_JSON));
+
+		LtaBusArrivalResponse response = client.getBusArrivals("83139", "15");
+
+		assertThat(response.services()).hasSize(1);
 		server.verify();
 	}
 
@@ -55,7 +78,7 @@ class DataMallLtaClientTests {
 				properties("")
 		);
 
-		assertThatThrownBy(() -> client.getBusArrivals("83139"))
+		assertThatThrownBy(() -> client.getBusArrivals("83139", null))
 				.isInstanceOf(LtaClientConfigurationException.class)
 				.hasMessageContaining("LTA_ACCOUNT_KEY");
 	}
@@ -71,7 +94,7 @@ class DataMallLtaClientTests {
 		server.expect(requestTo(BASE_URL + "/v3/BusArrival?BusStopCode=83139"))
 				.andRespond(withServerError());
 
-		assertThatThrownBy(() -> client.getBusArrivals("83139"))
+		assertThatThrownBy(() -> client.getBusArrivals("83139", null))
 				.isInstanceOf(LtaClientException.class)
 				.hasMessageContaining("HTTP 500");
 		server.verify();

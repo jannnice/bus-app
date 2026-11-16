@@ -28,7 +28,7 @@ class BusArrivalControllerTests {
 
 	@Test
 	void returnsArrivalsAsJson() throws Exception {
-		given(busArrivalService.getArrivals("83139"))
+		given(busArrivalService.getArrivals("83139", null))
 				.willReturn(new BusArrivalResponse(
 						"83139",
 						List.of(new BusServiceArrival(
@@ -61,14 +61,30 @@ class BusArrivalControllerTests {
 	}
 
 	@Test
+	void passesAnOptionalServiceNumberToTheService() throws Exception {
+		given(busArrivalService.getArrivals("83139", "107M"))
+				.willReturn(new BusArrivalResponse("83139", List.of()));
+
+		mockMvc.perform(get("/api/v1/arrivals/83139").queryParam("serviceNo", "107m"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.stopCode").value("83139"));
+	}
+
+	@Test
 	void rejectsInvalidStopCode() throws Exception {
 		mockMvc.perform(get("/api/v1/arrivals/not-a-stop"))
 				.andExpect(status().isBadRequest());
 	}
 
 	@Test
+	void rejectsInvalidServiceNumber() throws Exception {
+		mockMvc.perform(get("/api/v1/arrivals/83139").queryParam("serviceNo", "15!"))
+				.andExpect(status().isBadRequest());
+	}
+
+	@Test
 	void returnsBadGatewayWhenLtaIsUnavailable() throws Exception {
-		given(busArrivalService.getArrivals("83139"))
+		given(busArrivalService.getArrivals("83139", null))
 				.willThrow(new LtaClientException("Could not reach LTA DataMall"));
 
 		mockMvc.perform(get("/api/v1/arrivals/83139"))
@@ -78,7 +94,7 @@ class BusArrivalControllerTests {
 
 	@Test
 	void returnsServiceUnavailableWhenTheAccountKeyIsMissing() throws Exception {
-		given(busArrivalService.getArrivals("83139"))
+		given(busArrivalService.getArrivals("83139", null))
 				.willThrow(new LtaClientConfigurationException("LTA_ACCOUNT_KEY is not configured"));
 
 		mockMvc.perform(get("/api/v1/arrivals/83139"))

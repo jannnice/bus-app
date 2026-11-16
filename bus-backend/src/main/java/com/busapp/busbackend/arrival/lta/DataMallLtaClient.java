@@ -24,7 +24,7 @@ public class DataMallLtaClient implements LtaClient {
 	}
 
 	@Override
-	public LtaBusArrivalResponse getBusArrivals(String stopCode) {
+	public LtaBusArrivalResponse getBusArrivals(String stopCode, String serviceNo) {
 		if (!StringUtils.hasText(accountKey)) {
 			throw new LtaClientConfigurationException(
 					"LTA DataMall access is unavailable because LTA_ACCOUNT_KEY is not configured"
@@ -33,10 +33,14 @@ public class DataMallLtaClient implements LtaClient {
 
 		try {
 			LtaBusArrivalResponse response = restClient.get()
-					.uri(uriBuilder -> uriBuilder
-							.path("/v3/BusArrival")
-							.queryParam("BusStopCode", stopCode)
-							.build())
+					.uri(uriBuilder -> {
+						uriBuilder.path("/v3/BusArrival")
+								.queryParam("BusStopCode", stopCode);
+						if (StringUtils.hasText(serviceNo)) {
+							uriBuilder.queryParam("ServiceNo", serviceNo);
+						}
+						return uriBuilder.build();
+					})
 					.header(ACCOUNT_KEY_HEADER, accountKey)
 					.retrieve()
 					.body(LtaBusArrivalResponse.class);
