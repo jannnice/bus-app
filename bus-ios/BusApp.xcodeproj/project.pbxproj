@@ -1,0 +1,434 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		100000000000000000000001 /* BusApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000001 /* BusApp.swift */; };
+		100000000000000000000002 /* AppConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000002 /* AppConfiguration.swift */; };
+		100000000000000000000003 /* APIErrorResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000003 /* APIErrorResponse.swift */; };
+		100000000000000000000004 /* BackendAPIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000004 /* BackendAPIClient.swift */; };
+		100000000000000000000005 /* BackendAPIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000005 /* BackendAPIError.swift */; };
+		100000000000000000000006 /* BusStopAPIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000006 /* BusStopAPIClient.swift */; };
+		100000000000000000000007 /* BusStop.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000007 /* BusStop.swift */; };
+		100000000000000000000008 /* BusStopRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000008 /* BusStopRow.swift */; };
+		100000000000000000000009 /* BusStopSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000009 /* BusStopSearchView.swift */; };
+		10000000000000000000000A /* BusStopSearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000000000000000000000A /* BusStopSearchViewModel.swift */; };
+		10000000000000000000000B /* BackendAPIClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000000000000000000000B /* BackendAPIClientTests.swift */; };
+		10000000000000000000000C /* BusStopDecodingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000000000000000000000C /* BusStopDecodingTests.swift */; };
+		10000000000000000000000D /* BusStopSearchViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000000000000000000000D /* BusStopSearchViewModelTests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		300000000000000000000001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 400000000000000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 500000000000000000000001;
+			remoteInfo = BusApp;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		200000000000000000000001 /* BusApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusApp.swift; sourceTree = "<group>"; };
+		200000000000000000000002 /* AppConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfiguration.swift; sourceTree = "<group>"; };
+		200000000000000000000003 /* APIErrorResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIErrorResponse.swift; sourceTree = "<group>"; };
+		200000000000000000000004 /* BackendAPIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendAPIClient.swift; sourceTree = "<group>"; };
+		200000000000000000000005 /* BackendAPIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendAPIError.swift; sourceTree = "<group>"; };
+		200000000000000000000006 /* BusStopAPIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusStopAPIClient.swift; sourceTree = "<group>"; };
+		200000000000000000000007 /* BusStop.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusStop.swift; sourceTree = "<group>"; };
+		200000000000000000000008 /* BusStopRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusStopRow.swift; sourceTree = "<group>"; };
+		200000000000000000000009 /* BusStopSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusStopSearchView.swift; sourceTree = "<group>"; };
+		20000000000000000000000A /* BusStopSearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusStopSearchViewModel.swift; sourceTree = "<group>"; };
+		20000000000000000000000B /* BackendAPIClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendAPIClientTests.swift; sourceTree = "<group>"; };
+		20000000000000000000000C /* BusStopDecodingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusStopDecodingTests.swift; sourceTree = "<group>"; };
+		20000000000000000000000D /* BusStopSearchViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusStopSearchViewModelTests.swift; sourceTree = "<group>"; };
+		20000000000000000000000E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		20000000000000000000000F /* BusApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BusApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		200000000000000000000010 /* BusAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BusAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		600000000000000000000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		600000000000000000000002 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		700000000000000000000001 = {
+			isa = PBXGroup;
+			children = (
+				700000000000000000000002 /* BusApp */,
+				700000000000000000000009 /* BusAppTests */,
+				70000000000000000000000A /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		700000000000000000000002 /* BusApp */ = {
+			isa = PBXGroup;
+			children = (
+				700000000000000000000003 /* App */,
+				700000000000000000000004 /* Core */,
+				700000000000000000000006 /* Features */,
+				700000000000000000000008 /* Resources */,
+			);
+			path = BusApp;
+			sourceTree = "<group>";
+		};
+		700000000000000000000003 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				200000000000000000000002 /* AppConfiguration.swift */,
+				200000000000000000000001 /* BusApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		700000000000000000000004 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				700000000000000000000005 /* API */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		700000000000000000000005 /* API */ = {
+			isa = PBXGroup;
+			children = (
+				200000000000000000000003 /* APIErrorResponse.swift */,
+				200000000000000000000004 /* BackendAPIClient.swift */,
+				200000000000000000000005 /* BackendAPIError.swift */,
+				200000000000000000000006 /* BusStopAPIClient.swift */,
+			);
+			path = API;
+			sourceTree = "<group>";
+		};
+		700000000000000000000006 /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				700000000000000000000007 /* BusStopSearch */,
+			);
+			path = Features;
+			sourceTree = "<group>";
+		};
+		700000000000000000000007 /* BusStopSearch */ = {
+			isa = PBXGroup;
+			children = (
+				200000000000000000000007 /* BusStop.swift */,
+				200000000000000000000008 /* BusStopRow.swift */,
+				200000000000000000000009 /* BusStopSearchView.swift */,
+				20000000000000000000000A /* BusStopSearchViewModel.swift */,
+			);
+			path = BusStopSearch;
+			sourceTree = "<group>";
+		};
+		700000000000000000000008 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				20000000000000000000000E /* Info.plist */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		700000000000000000000009 /* BusAppTests */ = {
+			isa = PBXGroup;
+			children = (
+				20000000000000000000000B /* BackendAPIClientTests.swift */,
+				20000000000000000000000C /* BusStopDecodingTests.swift */,
+				20000000000000000000000D /* BusStopSearchViewModelTests.swift */,
+			);
+			path = BusAppTests;
+			sourceTree = "<group>";
+		};
+		70000000000000000000000A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				20000000000000000000000F /* BusApp.app */,
+				200000000000000000000010 /* BusAppTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		500000000000000000000001 /* BusApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 800000000000000000000002 /* Build configuration list for PBXNativeTarget "BusApp" */;
+			buildPhases = (
+				600000000000000000000003 /* Sources */,
+				600000000000000000000001 /* Frameworks */,
+				600000000000000000000005 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = BusApp;
+			productName = BusApp;
+			productReference = 20000000000000000000000F /* BusApp.app */;
+			productType = "com.apple.product-type.application";
+		};
+		500000000000000000000002 /* BusAppTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 800000000000000000000003 /* Build configuration list for PBXNativeTarget "BusAppTests" */;
+			buildPhases = (
+				600000000000000000000004 /* Sources */,
+				600000000000000000000002 /* Frameworks */,
+				600000000000000000000006 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				900000000000000000000001 /* PBXTargetDependency */,
+			);
+			name = BusAppTests;
+			productName = BusAppTests;
+			productReference = 200000000000000000000010 /* BusAppTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		400000000000000000000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2720;
+				LastUpgradeCheck = 2720;
+				TargetAttributes = {
+					500000000000000000000001 = {
+						CreatedOnToolsVersion = 27.2;
+					};
+					500000000000000000000002 = {
+						CreatedOnToolsVersion = 27.2;
+						TestTargetID = 500000000000000000000001;
+					};
+				};
+			};
+			buildConfigurationList = 800000000000000000000001 /* Build configuration list for PBXProject "BusApp" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 700000000000000000000001;
+			productRefGroup = 70000000000000000000000A /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				500000000000000000000001 /* BusApp */,
+				500000000000000000000002 /* BusAppTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		600000000000000000000005 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		600000000000000000000006 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		600000000000000000000003 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				100000000000000000000001 /* BusApp.swift in Sources */,
+				100000000000000000000002 /* AppConfiguration.swift in Sources */,
+				100000000000000000000003 /* APIErrorResponse.swift in Sources */,
+				100000000000000000000004 /* BackendAPIClient.swift in Sources */,
+				100000000000000000000005 /* BackendAPIError.swift in Sources */,
+				100000000000000000000006 /* BusStopAPIClient.swift in Sources */,
+				100000000000000000000007 /* BusStop.swift in Sources */,
+				100000000000000000000008 /* BusStopRow.swift in Sources */,
+				100000000000000000000009 /* BusStopSearchView.swift in Sources */,
+				10000000000000000000000A /* BusStopSearchViewModel.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		600000000000000000000004 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				10000000000000000000000B /* BackendAPIClientTests.swift in Sources */,
+				10000000000000000000000C /* BusStopDecodingTests.swift in Sources */,
+				10000000000000000000000D /* BusStopSearchViewModelTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		900000000000000000000001 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 500000000000000000000001 /* BusApp */;
+			targetProxy = 300000000000000000000001 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		A00000000000000000000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		A00000000000000000000002 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		A00000000000000000000003 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = BusApp/Resources/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jannicesuciptono.BusApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_STRICT_CONCURRENCY = targeted;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		A00000000000000000000004 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = BusApp/Resources/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jannicesuciptono.BusApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_STRICT_CONCURRENCY = targeted;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		A00000000000000000000005 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jannicesuciptono.BusAppTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_STRICT_CONCURRENCY = targeted;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BusApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/BusApp";
+			};
+			name = Debug;
+		};
+		A00000000000000000000006 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jannicesuciptono.BusAppTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_STRICT_CONCURRENCY = targeted;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BusApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/BusApp";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		800000000000000000000001 /* Build configuration list for PBXProject "BusApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A00000000000000000000001 /* Debug */,
+				A00000000000000000000002 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		800000000000000000000002 /* Build configuration list for PBXNativeTarget "BusApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A00000000000000000000003 /* Debug */,
+				A00000000000000000000004 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		800000000000000000000003 /* Build configuration list for PBXNativeTarget "BusAppTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A00000000000000000000005 /* Debug */,
+				A00000000000000000000006 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 400000000000000000000001 /* Project object */;
+}
