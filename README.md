@@ -16,11 +16,14 @@ bus-app/
 
 - `GET /api/v1/arrivals/{stopCode}` for live bus arrivals
 - Optional `serviceNo` filtering for a single bus service
+- Bus-stop search by code, landmark, or road name
+- Nearby bus stops ordered by distance from the user
 - Typed LTA DataMall client and response models
+- Automatic pagination across the complete LTA bus-stop dataset
 - Five-digit bus stop validation
 - Connection and read timeouts for upstream requests
 - Stable JSON errors for invalid requests, configuration, and upstream failures
-- 20-second in-memory Caffeine cache
+- Separate 20-second arrival and 24-hour bus-stop caches
 - Actuator health endpoint
 - Unit, controller, HTTP client, context, and caching tests
 
@@ -61,6 +64,21 @@ Request arrivals for one service at that stop:
 ```bash
 curl "http://localhost:8080/api/v1/arrivals/83139?serviceNo=15"
 ```
+
+Search for bus stops by stop code, landmark, or road name:
+
+```bash
+curl "http://localhost:8080/api/v1/bus-stops?query=grand&limit=20"
+```
+
+Find stops within 500 metres of a location, nearest first:
+
+```bash
+curl "http://localhost:8080/api/v1/bus-stops/nearby?latitude=1.2968&longitude=103.853&radiusMeters=500&limit=20"
+```
+
+Search results contain the stop code, road name, description, latitude, and
+longitude. Nearby results also contain `distanceMeters`.
 
 Check application health:
 
@@ -117,4 +135,9 @@ LtaClient ----> LTA DataMall
 LtaArrivalMapper ----> Public API response
 ```
 
-The project is intentionally a modular monolith. Database persistence, static bus-stop data, Docker, and deployment automation will be introduced incrementally as the project grows.
+Bus-stop requests follow a similar path: `BusStopController` asks
+`BusStopService` to search the cached catalog, while `LtaBusStopClient`
+downloads all DataMall pages when the 24-hour catalog cache needs refreshing.
+
+The project is intentionally a modular monolith. Database persistence, Docker,
+and deployment automation will be introduced incrementally as the project grows.

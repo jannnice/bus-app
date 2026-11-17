@@ -11,9 +11,11 @@ import org.springframework.context.MessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -58,6 +60,32 @@ public class GlobalExceptionHandler {
 				HttpStatus.BAD_REQUEST,
 				"INVALID_REQUEST",
 				message,
+				request
+		);
+	}
+
+	@ExceptionHandler(MissingServletRequestParameterException.class)
+	public ResponseEntity<ApiErrorResponse> handleMissingRequestParameter(
+			MissingServletRequestParameterException exception,
+			HttpServletRequest request
+	) {
+		return errorResponse(
+				HttpStatus.BAD_REQUEST,
+				"INVALID_REQUEST",
+				"Required request parameter '" + exception.getParameterName() + "' is missing",
+				request
+		);
+	}
+
+	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
+	public ResponseEntity<ApiErrorResponse> handleRequestParameterTypeMismatch(
+			MethodArgumentTypeMismatchException exception,
+			HttpServletRequest request
+	) {
+		return errorResponse(
+				HttpStatus.BAD_REQUEST,
+				"INVALID_REQUEST",
+				exception.getName() + " has an invalid value",
 				request
 		);
 	}
