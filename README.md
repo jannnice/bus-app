@@ -1,6 +1,7 @@
 # Singapore Bus App
 
-A learning-focused Singapore bus application with a native iOS frontend planned alongside a Java and Spring Boot backend.
+A learning-focused Singapore bus application with a native SwiftUI frontend and
+a Java and Spring Boot backend.
 
 The backend acts as a secure boundary between the iOS application and LTA DataMall. It keeps the LTA account key off the device, validates requests, transforms LTA-specific responses into a stable application API, and briefly caches live arrivals.
 
@@ -9,8 +10,16 @@ The backend acts as a secure boundary between the iOS application and LTA DataMa
 ```text
 bus-app/
 ├── bus-backend/    Java 21 and Spring Boot backend
-└── bus-ios/        Planned SwiftUI application
+└── bus-ios/        SwiftUI iOS application
 ```
+
+## Current iOS features
+
+- Bus-stop search by code, landmark, or road name
+- Typed async networking using `URLSession`
+- Loading, empty-results, and backend-error states
+- Configurable backend URL with no LTA key stored on the device
+- Model, networking, and view-model tests
 
 ## Current backend features
 
@@ -30,6 +39,7 @@ bus-app/
 ## Requirements
 
 - Java 21
+- Xcode 27 or later
 - An LTA DataMall Account Key
 
 Gradle does not need to be installed separately because the repository includes the Gradle wrapper.
@@ -116,6 +126,20 @@ cd bus-backend
 ```
 
 Automated tests use fixture data and a mock HTTP server. They do not require an LTA key or call the live DataMall API.
+
+## Run the iOS app
+
+1. Start the backend on port `8080`.
+2. Open `bus-ios/BusApp.xcodeproj` in Xcode.
+3. Select an iPhone Simulator and run the `BusApp` scheme.
+4. Search for a stop such as `83139`, `grand`, or `Victoria`.
+
+The Simulator uses `http://localhost:8080`, configured as `BackendBaseURL` in
+`BusApp/Resources/Info.plist`. For a physical iPhone, change that value to your
+Mac's local network address, such as `http://192.168.1.10:8080`, and ensure the
+Mac and iPhone are on the same network.
+
+Run the iOS tests from Xcode with Product > Test.
 
 ## Architecture
 
