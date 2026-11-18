@@ -10,7 +10,7 @@ struct BusApp: App {
 
     var body: some Scene {
         WindowGroup {
-            BusStopSearchView(apiClient: apiClient)
+            BusAppRootView(apiClient: apiClient)
         }
     }
 }

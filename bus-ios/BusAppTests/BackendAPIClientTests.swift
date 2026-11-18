@@ -146,6 +146,62 @@ final class BackendAPIClientTests: XCTestCase {
         }
     }
 
+    func testNearbyStopsBuildsTheRequestAndDecodesResults() async throws {
+        URLProtocolStub.requestHandler = { request in
+            XCTAssertEqual(request.httpMethod, "GET")
+
+            let components = try XCTUnwrap(
+                URLComponents(url: try XCTUnwrap(request.url), resolvingAgainstBaseURL: false)
+            )
+            XCTAssertEqual(components.path, "/api/v1/bus-stops/nearby")
+            XCTAssertEqual(
+                components.queryItems?.first { $0.name == "latitude" }?.value,
+                "1.2968"
+            )
+            XCTAssertEqual(
+                components.queryItems?.first { $0.name == "longitude" }?.value,
+                "103.853"
+            )
+            XCTAssertEqual(
+                components.queryItems?.first { $0.name == "radiusMeters" }?.value,
+                "750"
+            )
+            XCTAssertEqual(
+                components.queryItems?.first { $0.name == "limit" }?.value,
+                "5"
+            )
+
+            let data = Data(
+                """
+                [{
+                  "stopCode": "01012",
+                  "roadName": "Victoria St",
+                  "description": "Hotel Grand Pacific",
+                  "latitude": 1.29685,
+                  "longitude": 103.853,
+                  "distanceMeters": 85
+                }]
+                """.utf8
+            )
+            return (HTTPURLResponse(
+                url: try XCTUnwrap(request.url),
+                statusCode: 200,
+                httpVersion: nil,
+                headerFields: nil
+            )!, data)
+        }
+
+        let results = try await makeClient().nearbyBusStops(
+            latitude: 1.2968,
+            longitude: 103.853,
+            radiusMeters: 750,
+            limit: 5
+        )
+
+        XCTAssertEqual(results.map(\.stopCode), ["01012"])
+        XCTAssertEqual(results.first?.distanceMeters, 85)
+    }
+
     private func makeClient() -> BackendAPIClient {
         let configuration = URLSessionConfiguration.ephemeral
         configuration.protocolClasses = [URLProtocolStub.self]
