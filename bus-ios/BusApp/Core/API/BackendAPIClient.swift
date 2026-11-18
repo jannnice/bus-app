@@ -1,6 +1,6 @@
 import Foundation
 
-struct BackendAPIClient: BusStopAPIClient, BusArrivalAPIClient {
+struct BackendAPIClient: BusStopAPIClient, BusArrivalAPIClient, NearbyBusStopAPIClient {
     private let baseURL: URL
     private let session: URLSession
     private let decoder: JSONDecoder
@@ -51,6 +51,39 @@ struct BackendAPIClient: BusStopAPIClient, BusArrivalAPIClient {
 
         do {
             return try decoder.decode(BusArrivalResponse.self, from: data)
+        } catch {
+            throw BackendAPIError.decodingFailed
+        }
+    }
+
+    func nearbyBusStops(
+        latitude: Double,
+        longitude: Double,
+        radiusMeters: Int = 500,
+        limit: Int = 20
+    ) async throws -> [NearbyBusStop] {
+        guard var components = URLComponents(
+            url: baseURL.appending(path: "/api/v1/bus-stops/nearby"),
+            resolvingAgainstBaseURL: false
+        ) else {
+            throw BackendAPIError.invalidRequest
+        }
+
+        components.queryItems = [
+            URLQueryItem(name: "latitude", value: String(latitude)),
+            URLQueryItem(name: "longitude", value: String(longitude)),
+            URLQueryItem(name: "radiusMeters", value: String(radiusMeters)),
+            URLQueryItem(name: "limit", value: String(limit))
+        ]
+
+        guard let url = components.url else {
+            throw BackendAPIError.invalidRequest
+        }
+
+        let data = try await responseData(from: url)
+
+        do {
+            return try decoder.decode([NearbyBusStop].self, from: data)
         } catch {
             throw BackendAPIError.decodingFailed
         }

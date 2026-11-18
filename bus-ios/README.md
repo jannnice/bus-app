@@ -9,7 +9,9 @@ DataMall key remains on the backend and is never included in this project.
 BusApp/
 ├── App/                         App entry point and configuration
 ├── Core/API/                    Backend client and error handling
+├── Core/Location/               Testable device-location provider
 ├── Features/BusArrivals/        Live-arrival models, state, formatting, and UI
+├── Features/NearbyBusStops/     Nearby-stop models, state, formatting, and UI
 ├── Features/BusStopSearch/      Search model, state, and SwiftUI views
 └── Resources/                   Application configuration
 BusAppTests/                     Model, networking, and state tests
@@ -20,8 +22,13 @@ BusAppTests/                     Model, networking, and state tests
 1. Start the backend from `../bus-backend` with `./gradlew bootRun`.
 2. Open `BusApp.xcodeproj`.
 3. Run the `BusApp` scheme on an iPhone Simulator.
-4. Enter a stop code, landmark, or road name and press Search.
-5. Tap a result to view live arrivals for that stop.
+4. In Search, enter a stop code, landmark, or road name and press Search.
+5. In Nearby, allow location access to list stops within 500 metres.
+6. Tap a result from either tab to view live arrivals for that stop.
+
+For Simulator testing, choose a simulated location from Xcode’s location
+controls. The Nearby screen handles disabled, denied, and restricted location
+access separately and offers a Settings shortcut when access was denied.
 
 The detail screen loads `GET /api/v1/arrivals/{stopCode}` through the backend,
 supports pull-to-refresh, and refreshes automatically about every 20 seconds

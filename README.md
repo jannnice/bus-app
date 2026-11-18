@@ -16,6 +16,8 @@ bus-app/
 ## Current iOS features
 
 - Bus-stop search by code, landmark, or road name
+- Nearby bus stops using the device location, ordered by distance
+- Clear location permission, restricted-access, empty, and retry states
 - Live arrivals after selecting a search result
 - Up to three predictions per service with load, accessibility, and bus type
 - Pull-to-refresh and automatic refresh about every 20 seconds while visible
@@ -135,8 +137,13 @@ Automated tests use fixture data and a mock HTTP server. They do not require an 
 1. Start the backend on port `8080`.
 2. Open `bus-ios/BusApp.xcodeproj` in Xcode.
 3. Select an iPhone Simulator and run the `BusApp` scheme.
-4. Search for a stop such as `83139`, `grand`, or `Victoria`.
-5. Tap a result to see its live bus services and next arrivals.
+4. Use the Search tab to find a stop such as `83139`, `grand`, or `Victoria`.
+5. Use the Nearby tab to allow location access and see stops within 500 metres.
+6. Tap a result in either tab to see its live bus services and next arrivals.
+
+The Simulator can use a simulated location from Xcode’s location controls. On a
+physical iPhone, iOS asks for location access only when the Nearby tab needs it.
+If access was denied, the Nearby screen links to the app’s Settings page.
 
 The arrivals screen refreshes while it is visible and can also be refreshed by
 pulling down. Arrival times from the backend include their time-zone offset;
