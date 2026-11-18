@@ -1,6 +1,6 @@
 import Foundation
 
-struct BackendAPIClient: BusStopAPIClient {
+struct BackendAPIClient: BusStopAPIClient, BusArrivalAPIClient {
     private let baseURL: URL
     private let session: URLSession
     private let decoder: JSONDecoder
@@ -34,6 +34,29 @@ struct BackendAPIClient: BusStopAPIClient {
             throw BackendAPIError.invalidRequest
         }
 
+        let data = try await responseData(from: url)
+
+        do {
+            return try decoder.decode([BusStop].self, from: data)
+        } catch {
+            throw BackendAPIError.decodingFailed
+        }
+    }
+
+    func arrivals(for stopCode: String) async throws -> BusArrivalResponse {
+        let url = baseURL
+            .appending(path: "api/v1/arrivals")
+            .appending(path: stopCode)
+        let data = try await responseData(from: url)
+
+        do {
+            return try decoder.decode(BusArrivalResponse.self, from: data)
+        } catch {
+            throw BackendAPIError.decodingFailed
+        }
+    }
+
+    private func responseData(from url: URL) async throws -> Data {
         let (data, response) = try await session.data(from: url)
         guard let httpResponse = response as? HTTPURLResponse else {
             throw BackendAPIError.invalidResponse
@@ -47,10 +70,6 @@ struct BackendAPIClient: BusStopAPIClient {
             )
         }
 
-        do {
-            return try decoder.decode([BusStop].self, from: data)
-        } catch {
-            throw BackendAPIError.decodingFailed
-        }
+        return data
     }
 }

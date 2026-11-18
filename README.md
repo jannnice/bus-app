@@ -16,8 +16,11 @@ bus-app/
 ## Current iOS features
 
 - Bus-stop search by code, landmark, or road name
+- Live arrivals after selecting a search result
+- Up to three predictions per service with load, accessibility, and bus type
+- Pull-to-refresh and automatic refresh about every 20 seconds while visible
 - Typed async networking using `URLSession`
-- Loading, empty-results, and backend-error states
+- Loading, empty-results, empty-service, and backend-error states
 - Configurable backend URL with no LTA key stored on the device
 - Model, networking, and view-model tests
 
@@ -133,6 +136,12 @@ Automated tests use fixture data and a mock HTTP server. They do not require an 
 2. Open `bus-ios/BusApp.xcodeproj` in Xcode.
 3. Select an iPhone Simulator and run the `BusApp` scheme.
 4. Search for a stop such as `83139`, `grand`, or `Victoria`.
+5. Tap a result to see its live bus services and next arrivals.
+
+The arrivals screen refreshes while it is visible and can also be refreshed by
+pulling down. Arrival times from the backend include their time-zone offset;
+the app decodes them as absolute dates and displays `Arr`, whole minutes, or an
+em dash when no prediction is available.
 
 The Simulator uses `http://localhost:8080`, configured as `BackendBaseURL` in
 `BusApp/Resources/Info.plist`. For a physical iPhone, change that value to your
