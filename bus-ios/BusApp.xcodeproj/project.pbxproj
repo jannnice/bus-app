@@ -20,6 +20,14 @@
 		10000000000000000000000B /* BackendAPIClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000000000000000000000B /* BackendAPIClientTests.swift */; };
 		10000000000000000000000C /* BusStopDecodingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000000000000000000000C /* BusStopDecodingTests.swift */; };
 		10000000000000000000000D /* BusStopSearchViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000000000000000000000D /* BusStopSearchViewModelTests.swift */; };
+		10000000000000000000000E /* BusArrivalAPIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000011 /* BusArrivalAPIClient.swift */; };
+		10000000000000000000000F /* BusArrival.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000012 /* BusArrival.swift */; };
+		100000000000000000000010 /* ArrivalTimeFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000013 /* ArrivalTimeFormatter.swift */; };
+		100000000000000000000011 /* BusArrivalViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000014 /* BusArrivalViewModel.swift */; };
+		100000000000000000000012 /* BusArrivalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000015 /* BusArrivalView.swift */; };
+		100000000000000000000013 /* BusArrivalDecodingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000016 /* BusArrivalDecodingTests.swift */; };
+		100000000000000000000014 /* BusArrivalViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000017 /* BusArrivalViewModelTests.swift */; };
+		100000000000000000000015 /* ArrivalTimeFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000018 /* ArrivalTimeFormatterTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +57,14 @@
 		20000000000000000000000E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		20000000000000000000000F /* BusApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BusApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		200000000000000000000010 /* BusAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BusAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		200000000000000000000011 /* BusArrivalAPIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusArrivalAPIClient.swift; sourceTree = "<group>"; };
+		200000000000000000000012 /* BusArrival.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusArrival.swift; sourceTree = "<group>"; };
+		200000000000000000000013 /* ArrivalTimeFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrivalTimeFormatter.swift; sourceTree = "<group>"; };
+		200000000000000000000014 /* BusArrivalViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusArrivalViewModel.swift; sourceTree = "<group>"; };
+		200000000000000000000015 /* BusArrivalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusArrivalView.swift; sourceTree = "<group>"; };
+		200000000000000000000016 /* BusArrivalDecodingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusArrivalDecodingTests.swift; sourceTree = "<group>"; };
+		200000000000000000000017 /* BusArrivalViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusArrivalViewModelTests.swift; sourceTree = "<group>"; };
+		200000000000000000000018 /* ArrivalTimeFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrivalTimeFormatterTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -113,6 +129,7 @@
 				200000000000000000000004 /* BackendAPIClient.swift */,
 				200000000000000000000005 /* BackendAPIError.swift */,
 				200000000000000000000006 /* BusStopAPIClient.swift */,
+				200000000000000000000011 /* BusArrivalAPIClient.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -120,6 +137,7 @@
 		700000000000000000000006 /* Features */ = {
 			isa = PBXGroup;
 			children = (
+				70000000000000000000000B /* BusArrivals */,
 				700000000000000000000007 /* BusStopSearch */,
 			);
 			path = Features;
@@ -150,6 +168,9 @@
 				20000000000000000000000B /* BackendAPIClientTests.swift */,
 				20000000000000000000000C /* BusStopDecodingTests.swift */,
 				20000000000000000000000D /* BusStopSearchViewModelTests.swift */,
+				200000000000000000000016 /* BusArrivalDecodingTests.swift */,
+				200000000000000000000017 /* BusArrivalViewModelTests.swift */,
+				200000000000000000000018 /* ArrivalTimeFormatterTests.swift */,
 			);
 			path = BusAppTests;
 			sourceTree = "<group>";
@@ -161,6 +182,17 @@
 				200000000000000000000010 /* BusAppTests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		70000000000000000000000B /* BusArrivals */ = {
+			isa = PBXGroup;
+			children = (
+				200000000000000000000012 /* BusArrival.swift */,
+				200000000000000000000013 /* ArrivalTimeFormatter.swift */,
+				200000000000000000000015 /* BusArrivalView.swift */,
+				200000000000000000000014 /* BusArrivalViewModel.swift */,
+			);
+			path = BusArrivals;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -271,6 +303,11 @@
 				100000000000000000000008 /* BusStopRow.swift in Sources */,
 				100000000000000000000009 /* BusStopSearchView.swift in Sources */,
 				10000000000000000000000A /* BusStopSearchViewModel.swift in Sources */,
+				10000000000000000000000E /* BusArrivalAPIClient.swift in Sources */,
+				10000000000000000000000F /* BusArrival.swift in Sources */,
+				100000000000000000000010 /* ArrivalTimeFormatter.swift in Sources */,
+				100000000000000000000011 /* BusArrivalViewModel.swift in Sources */,
+				100000000000000000000012 /* BusArrivalView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -281,6 +318,9 @@
 				10000000000000000000000B /* BackendAPIClientTests.swift in Sources */,
 				10000000000000000000000C /* BusStopDecodingTests.swift in Sources */,
 				10000000000000000000000D /* BusStopSearchViewModelTests.swift in Sources */,
+				100000000000000000000013 /* BusArrivalDecodingTests.swift in Sources */,
+				100000000000000000000014 /* BusArrivalViewModelTests.swift in Sources */,
+				100000000000000000000015 /* ArrivalTimeFormatterTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

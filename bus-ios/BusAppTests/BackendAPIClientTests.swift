@@ -80,6 +80,72 @@ final class BackendAPIClientTests: XCTestCase {
         }
     }
 
+    func testArrivalsBuildsTheRequestPathAndDecodesTheResponse() async throws {
+        URLProtocolStub.requestHandler = { request in
+            XCTAssertEqual(request.httpMethod, "GET")
+            XCTAssertEqual(request.url?.path, "/api/v1/arrivals/83139")
+            XCTAssertNil(request.url?.query)
+
+            let data = Data(
+                """
+                {
+                  "stopCode": "83139",
+                  "services": [{
+                    "serviceNo": "15",
+                    "operator": "GAS",
+                    "arrivals": []
+                  }]
+                }
+                """.utf8
+            )
+            return (HTTPURLResponse(
+                url: try XCTUnwrap(request.url),
+                statusCode: 200,
+                httpVersion: nil,
+                headerFields: nil
+            )!, data)
+        }
+
+        let response = try await makeClient().arrivals(for: "83139")
+
+        XCTAssertEqual(response.stopCode, "83139")
+        XCTAssertEqual(response.services.map(\.serviceNo), ["15"])
+    }
+
+    func testArrivalsUsesTheBackendErrorMessage() async throws {
+        URLProtocolStub.requestHandler = { request in
+            let data = Data(
+                """
+                {
+                  "code": "LTA_UNAVAILABLE",
+                  "message": "Live arrivals are temporarily unavailable",
+                  "timestamp": "2026-11-17T01:00:00Z",
+                  "path": "/api/v1/arrivals/83139"
+                }
+                """.utf8
+            )
+            return (HTTPURLResponse(
+                url: try XCTUnwrap(request.url),
+                statusCode: 502,
+                httpVersion: nil,
+                headerFields: nil
+            )!, data)
+        }
+
+        do {
+            _ = try await makeClient().arrivals(for: "83139")
+            XCTFail("Expected the request to fail")
+        } catch let error as BackendAPIError {
+            XCTAssertEqual(
+                error,
+                .server(
+                    statusCode: 502,
+                    message: "Live arrivals are temporarily unavailable"
+                )
+            )
+        }
+    }
+
     private func makeClient() -> BackendAPIClient {
         let configuration = URLSessionConfiguration.ephemeral
         configuration.protocolClasses = [URLProtocolStub.self]

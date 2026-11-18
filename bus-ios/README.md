@@ -9,6 +9,7 @@ DataMall key remains on the backend and is never included in this project.
 BusApp/
 ├── App/                         App entry point and configuration
 ├── Core/API/                    Backend client and error handling
+├── Features/BusArrivals/        Live-arrival models, state, formatting, and UI
 ├── Features/BusStopSearch/      Search model, state, and SwiftUI views
 └── Resources/                   Application configuration
 BusAppTests/                     Model, networking, and state tests
@@ -20,7 +21,16 @@ BusAppTests/                     Model, networking, and state tests
 2. Open `BusApp.xcodeproj`.
 3. Run the `BusApp` scheme on an iPhone Simulator.
 4. Enter a stop code, landmark, or road name and press Search.
+5. Tap a result to view live arrivals for that stop.
+
+The detail screen loads `GET /api/v1/arrivals/{stopCode}` through the backend,
+supports pull-to-refresh, and refreshes automatically about every 20 seconds
+while it is visible. It shows up to three predictions per service, including
+arrival time, passenger load, wheelchair accessibility, and bus type.
 
 `BackendBaseURL` in `BusApp/Resources/Info.plist` defaults to
 `http://localhost:8080`. Replace it with your Mac's local network address when
 running on a physical iPhone.
+
+The iOS app never talks to LTA DataMall directly and does not contain an LTA
+account key.

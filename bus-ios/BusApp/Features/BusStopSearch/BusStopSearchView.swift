@@ -2,9 +2,11 @@ import SwiftUI
 
 struct BusStopSearchView: View {
     @State private var viewModel: BusStopSearchViewModel
+    private let arrivalAPIClient: any BusArrivalAPIClient
 
-    init(apiClient: any BusStopAPIClient) {
+    init(apiClient: any BusStopAPIClient & BusArrivalAPIClient) {
         _viewModel = State(initialValue: BusStopSearchViewModel(apiClient: apiClient))
+        arrivalAPIClient = apiClient
     }
 
     var body: some View {
@@ -32,7 +34,14 @@ struct BusStopSearchView: View {
                     }
                 } else {
                     List(viewModel.busStops) { busStop in
-                        BusStopRow(busStop: busStop)
+                        NavigationLink {
+                            BusArrivalView(
+                                busStop: busStop,
+                                apiClient: arrivalAPIClient
+                            )
+                        } label: {
+                            BusStopRow(busStop: busStop)
+                        }
                     }
                     .listStyle(.plain)
                 }
@@ -59,7 +68,7 @@ struct BusStopSearchView: View {
     BusStopSearchView(apiClient: PreviewBusStopAPIClient())
 }
 
-private struct PreviewBusStopAPIClient: BusStopAPIClient {
+private struct PreviewBusStopAPIClient: BusStopAPIClient, BusArrivalAPIClient {
     func searchBusStops(query: String, limit: Int) async throws -> [BusStop] {
         [
             BusStop(
@@ -70,5 +79,9 @@ private struct PreviewBusStopAPIClient: BusStopAPIClient {
                 longitude: 103.853
             )
         ]
+    }
+
+    func arrivals(for stopCode: String) async throws -> BusArrivalResponse {
+        BusArrivalResponse(stopCode: stopCode, services: [])
     }
 }
