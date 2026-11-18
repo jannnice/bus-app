@@ -5,14 +5,17 @@ struct BusArrivalView: View {
 
     @State private var viewModel: BusArrivalViewModel
     private let timeFormatter: ArrivalTimeFormatter
+    private let favoriteBusStopsViewModel: FavoriteBusStopsViewModel
 
     init(
         busStop: BusStop,
         apiClient: any BusArrivalAPIClient,
+        favoriteBusStopsViewModel: FavoriteBusStopsViewModel,
         timeFormatter: ArrivalTimeFormatter = ArrivalTimeFormatter()
     ) {
         self.busStop = busStop
         self.timeFormatter = timeFormatter
+        self.favoriteBusStopsViewModel = favoriteBusStopsViewModel
         _viewModel = State(
             initialValue: BusArrivalViewModel(
                 stopCode: busStop.stopCode,
@@ -43,6 +46,14 @@ struct BusArrivalView: View {
         }
         .navigationTitle("Live Arrivals")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                FavoriteToggleButton(
+                    busStop: busStop,
+                    viewModel: favoriteBusStopsViewModel
+                )
+            }
+        }
         .refreshable {
             await viewModel.load()
         }
@@ -177,7 +188,8 @@ private extension Collection {
                 latitude: 1.29685,
                 longitude: 103.853
             ),
-            apiClient: PreviewBusArrivalAPIClient()
+            apiClient: PreviewBusArrivalAPIClient(),
+            favoriteBusStopsViewModel: .preview()
         )
     }
 }

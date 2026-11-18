@@ -3,10 +3,15 @@ import SwiftUI
 struct BusStopSearchView: View {
     @State private var viewModel: BusStopSearchViewModel
     private let arrivalAPIClient: any BusArrivalAPIClient
+    private let favoriteBusStopsViewModel: FavoriteBusStopsViewModel
 
-    init(apiClient: any BusStopAPIClient & BusArrivalAPIClient) {
+    init(
+        apiClient: any BusStopAPIClient & BusArrivalAPIClient,
+        favoriteBusStopsViewModel: FavoriteBusStopsViewModel
+    ) {
         _viewModel = State(initialValue: BusStopSearchViewModel(apiClient: apiClient))
         arrivalAPIClient = apiClient
+        self.favoriteBusStopsViewModel = favoriteBusStopsViewModel
     }
 
     var body: some View {
@@ -34,13 +39,21 @@ struct BusStopSearchView: View {
                     }
                 } else {
                     List(viewModel.busStops) { busStop in
-                        NavigationLink {
-                            BusArrivalView(
+                        HStack(spacing: 8) {
+                            NavigationLink {
+                                BusArrivalView(
+                                    busStop: busStop,
+                                    apiClient: arrivalAPIClient,
+                                    favoriteBusStopsViewModel: favoriteBusStopsViewModel
+                                )
+                            } label: {
+                                BusStopRow(busStop: busStop)
+                            }
+
+                            FavoriteToggleButton(
                                 busStop: busStop,
-                                apiClient: arrivalAPIClient
+                                viewModel: favoriteBusStopsViewModel
                             )
-                        } label: {
-                            BusStopRow(busStop: busStop)
                         }
                     }
                     .listStyle(.plain)
@@ -65,7 +78,10 @@ struct BusStopSearchView: View {
 }
 
 #Preview {
-    BusStopSearchView(apiClient: PreviewBusStopAPIClient())
+    BusStopSearchView(
+        apiClient: PreviewBusStopAPIClient(),
+        favoriteBusStopsViewModel: .preview()
+    )
 }
 
 private struct PreviewBusStopAPIClient: BusStopAPIClient, BusArrivalAPIClient {
