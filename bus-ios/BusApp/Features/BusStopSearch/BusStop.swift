@@ -1,6 +1,6 @@
 import Foundation
 
-struct BusStop: Decodable, Equatable, Identifiable, Sendable {
+struct BusStop: Codable, Equatable, Identifiable, Sendable {
     let stopCode: String
     let roadName: String
     let description: String

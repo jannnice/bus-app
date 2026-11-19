@@ -6,14 +6,17 @@ struct NearbyBusStopsView: View {
 
     private let arrivalAPIClient: any BusArrivalAPIClient
     private let distanceFormatter: DistanceFormatter
+    private let favoriteBusStopsViewModel: FavoriteBusStopsViewModel
 
     init(
         apiClient: any NearbyBusStopAPIClient & BusArrivalAPIClient,
         locationProvider: any UserLocationProvider,
+        favoriteBusStopsViewModel: FavoriteBusStopsViewModel,
         distanceFormatter: DistanceFormatter = DistanceFormatter()
     ) {
         arrivalAPIClient = apiClient
         self.distanceFormatter = distanceFormatter
+        self.favoriteBusStopsViewModel = favoriteBusStopsViewModel
         _viewModel = State(
             initialValue: NearbyBusStopsViewModel(
                 apiClient: apiClient,
@@ -46,15 +49,23 @@ struct NearbyBusStopsView: View {
 
         case .loaded:
             List(viewModel.busStops) { busStop in
-                NavigationLink {
-                    BusArrivalView(
+                HStack(spacing: 8) {
+                    NavigationLink {
+                        BusArrivalView(
+                            busStop: busStop.busStop,
+                            apiClient: arrivalAPIClient,
+                            favoriteBusStopsViewModel: favoriteBusStopsViewModel
+                        )
+                    } label: {
+                        NearbyBusStopRow(
+                            busStop: busStop,
+                            distanceFormatter: distanceFormatter
+                        )
+                    }
+
+                    FavoriteToggleButton(
                         busStop: busStop.busStop,
-                        apiClient: arrivalAPIClient
-                    )
-                } label: {
-                    NearbyBusStopRow(
-                        busStop: busStop,
-                        distanceFormatter: distanceFormatter
+                        viewModel: favoriteBusStopsViewModel
                     )
                 }
             }
@@ -109,7 +120,8 @@ struct NearbyBusStopsView: View {
 #Preview {
     NearbyBusStopsView(
         apiClient: PreviewNearbyAPIClient(),
-        locationProvider: PreviewLocationProvider()
+        locationProvider: PreviewLocationProvider(),
+        favoriteBusStopsViewModel: .preview()
     )
 }
 
