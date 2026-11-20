@@ -26,6 +26,7 @@ DerivedData/
 xcuserdata/
 *.xcuserstate
 .swiftpm/
+bus-ios/Config/Secrets.xcconfig
 
 # Logs
 *.log

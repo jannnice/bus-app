@@ -11,6 +11,7 @@ final class BackendAPIClientTests: XCTestCase {
     func testSearchBuildsTheRequestAndDecodesBusStops() async throws {
         URLProtocolStub.requestHandler = { request in
             XCTAssertEqual(request.httpMethod, "GET")
+            XCTAssertNil(request.value(forHTTPHeaderField: "X-App-Token"))
 
             let components = try XCTUnwrap(
                 URLComponents(url: try XCTUnwrap(request.url), resolvingAgainstBaseURL: false)
@@ -42,6 +43,32 @@ final class BackendAPIClientTests: XCTestCase {
         let busStops = try await client.searchBusStops(query: "grand hotel", limit: 10)
 
         XCTAssertEqual(busStops.map(\.stopCode), ["01012"])
+    }
+
+    func testIncludesTheConfiguredAppToken() async throws {
+        URLProtocolStub.requestHandler = { request in
+            XCTAssertEqual(
+                request.value(forHTTPHeaderField: "X-App-Token"),
+                "test-app-token"
+            )
+
+            let data = Data(
+                """
+                {
+                  "stopCode": "83139",
+                  "services": []
+                }
+                """.utf8
+            )
+            return (HTTPURLResponse(
+                url: try XCTUnwrap(request.url),
+                statusCode: 200,
+                httpVersion: nil,
+                headerFields: nil
+            )!, data)
+        }
+
+        _ = try await makeClient(apiToken: "  test-app-token  ").arrivals(for: "83139")
     }
 
     func testSearchUsesTheBackendErrorMessage() async throws {
@@ -202,11 +229,12 @@ final class BackendAPIClientTests: XCTestCase {
         XCTAssertEqual(results.first?.distanceMeters, 85)
     }
 
-    private func makeClient() -> BackendAPIClient {
+    private func makeClient(apiToken: String? = nil) -> BackendAPIClient {
         let configuration = URLSessionConfiguration.ephemeral
         configuration.protocolClasses = [URLProtocolStub.self]
         return BackendAPIClient(
             baseURL: URL(string: "http://localhost:8080")!,
+            apiToken: apiToken,
             session: URLSession(configuration: configuration)
         )
     }

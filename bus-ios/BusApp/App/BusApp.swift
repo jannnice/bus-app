@@ -9,7 +9,10 @@ struct BusApp: App {
     private let favoriteBusStopsViewModel: FavoriteBusStopsViewModel
 
     init() {
-        apiClient = BackendAPIClient(baseURL: AppConfiguration.backendBaseURL)
+        apiClient = BackendAPIClient(
+            baseURL: AppConfiguration.backendBaseURL,
+            apiToken: AppConfiguration.backendAPIToken
+        )
         favoriteBusStopsViewModel = FavoriteBusStopsViewModel(
             storage: UserDefaultsFavoriteBusStopStorage()
         )
