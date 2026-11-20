@@ -102,6 +102,58 @@ Check application health:
 curl http://localhost:8080/actuator/health
 ```
 
+## Prepare and deploy the backend
+
+The backend includes a multi-stage Java 21 `Dockerfile` and a Render Blueprint
+for a Singapore-hosted web service. Local development remains unchanged and does
+not require an app token.
+
+The `production` Spring profile protects every `/api/v1/**` request with:
+
+- An `X-App-Token` header, configured through `APP_API_TOKEN`
+- A process-wide fixed-window rate limit, configured through
+  `APP_REQUESTS_PER_MINUTE` and defaulting to 120 requests per minute
+
+The health endpoint remains public so the hosting platform can monitor the
+service. A production process fails at startup when `APP_API_TOKEN` is missing
+or shorter than 32 characters.
+
+Generate a token and save it in a password manager. Do not commit it:
+
+```bash
+openssl rand -base64 32
+```
+
+To exercise the production configuration locally:
+
+```bash
+cd bus-backend
+export LTA_ACCOUNT_KEY="your-account-key"
+export APP_API_TOKEN="your-random-token-of-at-least-32-characters"
+SPRING_PROFILES_ACTIVE=production ./gradlew bootRun
+```
+
+Protected requests must include the token:
+
+```bash
+curl \
+  -H "X-App-Token: $APP_API_TOKEN" \
+  http://localhost:8080/api/v1/arrivals/83139
+```
+
+To deploy with Render:
+
+1. Push the repository to GitHub.
+2. In Render, create a Blueprint from the repository's `render.yaml`.
+3. Enter `LTA_ACCOUNT_KEY` and `APP_API_TOKEN` when prompted. Use the same app
+   token later when configuring the iOS client.
+4. Confirm that `GET /actuator/health` returns `{"status":"UP"}`.
+5. Confirm that an API request without `X-App-Token` returns `401`, and a request
+   with the header reaches LTA DataMall.
+
+The Blueprint starts on Render's free plan. Change `plan` in `render.yaml` or in
+the Render dashboard when an always-on instance is needed.
+
 ## Error responses
 
 Every handled API error uses the same shape, so clients can make decisions using
@@ -121,6 +173,8 @@ Current error codes are:
 | HTTP status | Code | Meaning |
 | --- | --- | --- |
 | `400` | `INVALID_REQUEST` | A path, query, or request-body value failed validation |
+| `401` | `UNAUTHORIZED` | The production API token is missing or invalid |
+| `429` | `RATE_LIMITED` | The production request limit was exceeded |
 | `502` | `LTA_UNAVAILABLE` | LTA DataMall could not be reached or rejected the upstream request |
 | `503` | `LTA_NOT_CONFIGURED` | The backend has no LTA account key configured |
 
