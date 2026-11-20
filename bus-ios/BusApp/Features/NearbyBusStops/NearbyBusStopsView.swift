@@ -38,6 +38,7 @@ struct NearbyBusStopsView: View {
                             } label: {
                                 Label("Refresh", systemImage: "arrow.clockwise")
                             }
+                            .disabled(viewModel.isSearchingMapArea)
                         }
                     }
                 }
@@ -47,6 +48,13 @@ struct NearbyBusStopsView: View {
                 return
             }
             await viewModel.load()
+        }
+        .alert("Map Search", isPresented: mapSearchMessageIsPresented) {
+            Button("OK", role: .cancel) {
+                viewModel.dismissMapSearchMessage()
+            }
+        } message: {
+            Text(viewModel.mapSearchMessage ?? "The map search could not be completed.")
         }
     }
 
@@ -137,39 +145,67 @@ struct NearbyBusStopsView: View {
                         arrivalAPIClient: arrivalAPIClient,
                         favoriteBusStopsViewModel: favoriteBusStopsViewModel,
                         distanceFormatter: distanceFormatter,
-                        onSelect: viewModel.selectBusStop
+                        canSearchMapArea: viewModel.canSearchMapArea,
+                        isSearchingMapArea: viewModel.isSearchingMapArea,
+                        onSelect: viewModel.selectBusStop,
+                        onVisibleCenterChange: viewModel.updateVisibleMapCenter,
+                        onSearchMapArea: viewModel.searchPendingMapArea
                     )
                 }
             }
         }
     }
 
+    @ViewBuilder
     private var nearbyStopsList: some View {
-        List(viewModel.busStops) { busStop in
-            HStack(spacing: 8) {
-                NavigationLink {
-                    BusArrivalView(
+        if viewModel.busStops.isEmpty {
+            ContentUnavailableView {
+                Label("No Stops in This Area", systemImage: "map")
+            } description: {
+                Text("Move the map and search another area, or refresh from your location.")
+            } actions: {
+                Button("Refresh My Location") {
+                    Task { await viewModel.load() }
+                }
+            }
+        } else {
+            List(viewModel.busStops) { busStop in
+                HStack(spacing: 8) {
+                    NavigationLink {
+                        BusArrivalView(
+                            busStop: busStop.busStop,
+                            apiClient: arrivalAPIClient,
+                            favoriteBusStopsViewModel: favoriteBusStopsViewModel
+                        )
+                    } label: {
+                        NearbyBusStopRow(
+                            busStop: busStop,
+                            distanceFormatter: distanceFormatter
+                        )
+                    }
+
+                    FavoriteToggleButton(
                         busStop: busStop.busStop,
-                        apiClient: arrivalAPIClient,
-                        favoriteBusStopsViewModel: favoriteBusStopsViewModel
-                    )
-                } label: {
-                    NearbyBusStopRow(
-                        busStop: busStop,
-                        distanceFormatter: distanceFormatter
+                        viewModel: favoriteBusStopsViewModel
                     )
                 }
-
-                FavoriteToggleButton(
-                    busStop: busStop.busStop,
-                    viewModel: favoriteBusStopsViewModel
-                )
+            }
+            .listStyle(.plain)
+            .refreshable {
+                await viewModel.load()
             }
         }
-        .listStyle(.plain)
-        .refreshable {
-            await viewModel.load()
-        }
+    }
+
+    private var mapSearchMessageIsPresented: Binding<Bool> {
+        Binding(
+            get: { viewModel.mapSearchMessage != nil },
+            set: { isPresented in
+                if !isPresented {
+                    viewModel.dismissMapSearchMessage()
+                }
+            }
+        )
     }
 }
 

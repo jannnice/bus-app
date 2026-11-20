@@ -152,7 +152,9 @@ If access was denied, the Nearby screen links to the app’s Settings page.
 
 The Nearby map fits the user and returned stops on screen. Tap a marker to see
 the stop name, road, code, and distance, then open live arrivals or toggle its
-favourite status. The scope button restores the fitted map after panning.
+favourite status. After moving the map, tap **Search This Area** to load stops
+within 500 metres of the new map centre. The scope button restores the most
+recent fitted results after panning.
 
 Favourites are encoded as JSON and stored locally in the app’s UserDefaults.
 They do not require an account, backend endpoint, or LTA credential.

@@ -36,6 +36,8 @@ controls. The Nearby screen handles disabled, denied, and restricted location
 access separately and offers a Settings shortcut when access was denied.
 Map markers reuse the loaded nearby results, highlight favourites, and open a
 stop card with its road, code, distance, favourite action, and arrival link.
+After a meaningful map movement, Search This Area queries the existing nearby
+endpoint around the visible centre without requesting the device location again.
 Pure map-region and annotation values keep fitting and marker mapping testable
 without requiring MapKit UI automation.
 

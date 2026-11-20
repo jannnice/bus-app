@@ -154,13 +154,125 @@ final class NearbyBusStopsViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.selectedBusStop)
     }
 
-    private func makeBusStop() -> NearbyBusStop {
+    func testSearchMapAreaUsesMovedMapCenterAndReplacesStops() async {
+        let initialStop = makeBusStop()
+        let movedStop = makeBusStop(
+            code: "02049",
+            description: "Raffles Hotel",
+            latitude: 1.2989,
+            longitude: 103.855
+        )
+        let locationProvider = UserLocationProviderStub(
+            result: .success(UserLocation(latitude: 1.2968, longitude: 103.853))
+        )
+        let apiClient = NearbyBusStopAPIClientStub(
+            results: [.success([initialStop]), .success([movedStop])]
+        )
+        let viewModel = NearbyBusStopsViewModel(
+            apiClient: apiClient,
+            locationProvider: locationProvider,
+            radiusMeters: 750,
+            resultLimit: 5
+        )
+
+        await viewModel.load()
+        viewModel.setDisplayMode(.map)
+        viewModel.updateVisibleMapCenter(
+            UserLocation(latitude: 1.2972, longitude: 103.853)
+        )
+        XCTAssertFalse(viewModel.canSearchMapArea)
+
+        let movedCenter = UserLocation(latitude: 1.2988, longitude: 103.855)
+        viewModel.updateVisibleMapCenter(movedCenter)
+        XCTAssertTrue(viewModel.canSearchMapArea)
+
+        await viewModel.searchPendingMapArea()
+
+        XCTAssertEqual(viewModel.busStops, [movedStop])
+        XCTAssertEqual(viewModel.lastSearchCenter, movedCenter)
+        XCTAssertFalse(viewModel.canSearchMapArea)
+        XCTAssertEqual(locationProvider.requestCount, 1)
+        let request = await apiClient.lastRequest
+        XCTAssertEqual(
+            request,
+            .init(
+                latitude: 1.2988,
+                longitude: 103.855,
+                radiusMeters: 750,
+                limit: 5
+            )
+        )
+    }
+
+    func testFailedMapAreaSearchPreservesExistingStopsAndCanRetry() async {
+        let initialStop = makeBusStop()
+        let locationProvider = UserLocationProviderStub(
+            result: .success(UserLocation(latitude: 1.2968, longitude: 103.853))
+        )
+        let apiClient = NearbyBusStopAPIClientStub(
+            results: [
+                .success([initialStop]),
+                .failure(BackendAPIError.server(statusCode: 502, message: "Try again later"))
+            ]
+        )
+        let viewModel = NearbyBusStopsViewModel(
+            apiClient: apiClient,
+            locationProvider: locationProvider
+        )
+
+        await viewModel.load()
+        viewModel.setDisplayMode(.map)
+        viewModel.updateVisibleMapCenter(
+            UserLocation(latitude: 1.2988, longitude: 103.855)
+        )
+        await viewModel.searchPendingMapArea()
+
+        XCTAssertEqual(viewModel.busStops, [initialStop])
+        XCTAssertEqual(viewModel.state, .loaded)
+        XCTAssertEqual(viewModel.mapSearchMessage, "Try again later")
+        XCTAssertTrue(viewModel.canSearchMapArea)
+    }
+
+    func testEmptyMapAreaSearchKeepsMapAvailableAndExplainsResult() async {
+        let locationProvider = UserLocationProviderStub(
+            result: .success(UserLocation(latitude: 1.2968, longitude: 103.853))
+        )
+        let apiClient = NearbyBusStopAPIClientStub(
+            results: [.success([makeBusStop()]), .success([])]
+        )
+        let viewModel = NearbyBusStopsViewModel(
+            apiClient: apiClient,
+            locationProvider: locationProvider
+        )
+
+        await viewModel.load()
+        viewModel.setDisplayMode(.map)
+        viewModel.updateVisibleMapCenter(
+            UserLocation(latitude: 1.2988, longitude: 103.855)
+        )
+        await viewModel.searchPendingMapArea()
+
+        XCTAssertTrue(viewModel.busStops.isEmpty)
+        XCTAssertEqual(viewModel.state, .loaded)
+        XCTAssertEqual(
+            viewModel.mapSearchMessage,
+            "No bus stops were found within 500 metres of this area."
+        )
+        XCTAssertNotNil(viewModel.mapRegion)
+    }
+
+    private func makeBusStop(
+        code: String = "01012",
+        description: String = "Hotel Grand Pacific",
+        latitude: Double = 1.29685,
+        longitude: Double = 103.853
+    ) -> NearbyBusStop {
         NearbyBusStop(
-            stopCode: "01012",
+            stopCode: code,
             roadName: "Victoria St",
-            description: "Hotel Grand Pacific",
-            latitude: 1.29685,
-            longitude: 103.853,
+            description: description,
+            latitude: latitude,
+            longitude: longitude,
             distanceMeters: 85
         )
     }
@@ -189,11 +301,16 @@ private actor NearbyBusStopAPIClientStub: NearbyBusStopAPIClient {
         let limit: Int
     }
 
-    private let result: Result<[NearbyBusStop], Error>
+    private var results: [Result<[NearbyBusStop], Error>]
     private(set) var lastRequest: Request?
 
     init(result: Result<[NearbyBusStop], Error>) {
-        self.result = result
+        results = [result]
+    }
+
+    init(results: [Result<[NearbyBusStop], Error>]) {
+        precondition(!results.isEmpty)
+        self.results = results
     }
 
     func nearbyBusStops(
@@ -208,6 +325,7 @@ private actor NearbyBusStopAPIClientStub: NearbyBusStopAPIClient {
             radiusMeters: radiusMeters,
             limit: limit
         )
+        let result = results.count > 1 ? results.removeFirst() : results[0]
         return try result.get()
     }
 }

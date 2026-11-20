@@ -45,6 +45,30 @@ final class NearbyMapRegionTests: XCTestCase {
         XCTAssertEqual(region.longitudeDelta, 0.006, accuracy: 0.000_001)
     }
 
+    func testSearchPolicyIgnoresSmallCameraMovements() {
+        let previousCenter = UserLocation(latitude: 1.2968, longitude: 103.853)
+        let nearbyCenter = UserLocation(latitude: 1.2972, longitude: 103.853)
+
+        XCTAssertFalse(
+            NearbyMapSearchPolicy.shouldOfferSearch(
+                from: previousCenter,
+                to: nearbyCenter
+            )
+        )
+    }
+
+    func testSearchPolicyOffersSearchAfterMeaningfulCameraMovement() {
+        let previousCenter = UserLocation(latitude: 1.2968, longitude: 103.853)
+        let movedCenter = UserLocation(latitude: 1.2988, longitude: 103.855)
+
+        XCTAssertTrue(
+            NearbyMapSearchPolicy.shouldOfferSearch(
+                from: previousCenter,
+                to: movedCenter
+            )
+        )
+    }
+
     private func makeBusStop(latitude: Double, longitude: Double) -> NearbyBusStop {
         NearbyBusStop(
             stopCode: "01012",

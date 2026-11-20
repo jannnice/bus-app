@@ -8,7 +8,11 @@ struct NearbyBusStopsMap: View {
     let arrivalAPIClient: any BusArrivalAPIClient
     let favoriteBusStopsViewModel: FavoriteBusStopsViewModel
     let distanceFormatter: DistanceFormatter
+    let canSearchMapArea: Bool
+    let isSearchingMapArea: Bool
     let onSelect: (String?) -> Void
+    let onVisibleCenterChange: (UserLocation) -> Void
+    let onSearchMapArea: () async -> Void
 
     @State private var cameraPosition: MapCameraPosition
 
@@ -19,7 +23,11 @@ struct NearbyBusStopsMap: View {
         arrivalAPIClient: any BusArrivalAPIClient,
         favoriteBusStopsViewModel: FavoriteBusStopsViewModel,
         distanceFormatter: DistanceFormatter,
-        onSelect: @escaping (String?) -> Void
+        canSearchMapArea: Bool,
+        isSearchingMapArea: Bool,
+        onSelect: @escaping (String?) -> Void,
+        onVisibleCenterChange: @escaping (UserLocation) -> Void,
+        onSearchMapArea: @escaping () async -> Void
     ) {
         self.busStops = busStops
         self.region = region
@@ -27,7 +35,11 @@ struct NearbyBusStopsMap: View {
         self.arrivalAPIClient = arrivalAPIClient
         self.favoriteBusStopsViewModel = favoriteBusStopsViewModel
         self.distanceFormatter = distanceFormatter
+        self.canSearchMapArea = canSearchMapArea
+        self.isSearchingMapArea = isSearchingMapArea
         self.onSelect = onSelect
+        self.onVisibleCenterChange = onVisibleCenterChange
+        self.onSearchMapArea = onSearchMapArea
         _cameraPosition = State(initialValue: .region(region.coordinateRegion))
     }
 
@@ -63,6 +75,10 @@ struct NearbyBusStopsMap: View {
             .padding()
             .accessibilityLabel("Show all nearby stops")
         }
+        .overlay(alignment: .top) {
+            searchMapAreaControl
+                .padding(.top, 8)
+        }
         .safeAreaInset(edge: .bottom) {
             if let selectedBusStop {
                 selectedStopCard(for: selectedBusStop)
@@ -72,6 +88,38 @@ struct NearbyBusStopsMap: View {
         }
         .onChange(of: region) { _, updatedRegion in
             cameraPosition = .region(updatedRegion.coordinateRegion)
+        }
+        .onMapCameraChange(frequency: .onEnd) { context in
+            guard cameraPosition.positionedByUser else {
+                return
+            }
+
+            onVisibleCenterChange(
+                UserLocation(
+                    latitude: context.region.center.latitude,
+                    longitude: context.region.center.longitude
+                )
+            )
+        }
+    }
+
+    @ViewBuilder
+    private var searchMapAreaControl: some View {
+        if isSearchingMapArea {
+            HStack(spacing: 8) {
+                ProgressView()
+                Text("Searching this area...")
+                    .font(.subheadline.weight(.semibold))
+            }
+            .padding(.horizontal, 14)
+            .padding(.vertical, 10)
+            .background(.regularMaterial, in: Capsule())
+        } else if canSearchMapArea {
+            Button("Search This Area") {
+                Task { await onSearchMapArea() }
+            }
+            .buttonStyle(.borderedProminent)
+            .buttonBorderShape(.capsule)
         }
     }
 

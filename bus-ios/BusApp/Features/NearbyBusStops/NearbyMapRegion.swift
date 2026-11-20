@@ -48,3 +48,39 @@ struct NearbyMapRegion: Equatable, Sendable {
         )
     }
 }
+
+enum NearbyMapSearchPolicy {
+    static func shouldOfferSearch(
+        from previousCenter: UserLocation,
+        to visibleCenter: UserLocation,
+        minimumDistanceMeters: Double = 100
+    ) -> Bool {
+        distanceMeters(from: previousCenter, to: visibleCenter) >= minimumDistanceMeters
+    }
+
+    private static func distanceMeters(
+        from start: UserLocation,
+        to end: UserLocation
+    ) -> Double {
+        let earthRadiusMeters = 6_371_000.0
+        let latitudeDelta = degreesToRadians(end.latitude - start.latitude)
+        let longitudeDelta = degreesToRadians(end.longitude - start.longitude)
+        let startLatitude = degreesToRadians(start.latitude)
+        let endLatitude = degreesToRadians(end.latitude)
+
+        let haversine = sin(latitudeDelta / 2) * sin(latitudeDelta / 2)
+            + cos(startLatitude) * cos(endLatitude)
+            * sin(longitudeDelta / 2) * sin(longitudeDelta / 2)
+        let clampedHaversine = min(1, max(0, haversine))
+        let angularDistance = 2 * atan2(
+            sqrt(clampedHaversine),
+            sqrt(1 - clampedHaversine)
+        )
+
+        return earthRadiusMeters * angularDistance
+    }
+
+    private static func degreesToRadians(_ degrees: Double) -> Double {
+        degrees * .pi / 180
+    }
+}

@@ -28,23 +28,30 @@ final class NearbyBusStopsViewModel {
     private(set) var userLocation: UserLocation?
     private(set) var mapRegion: NearbyMapRegion?
     private(set) var selectedStopCode: String?
+    private(set) var lastSearchCenter: UserLocation?
+    private(set) var pendingMapCenter: UserLocation?
+    private(set) var isSearchingMapArea = false
+    private(set) var mapSearchMessage: String?
 
     private let apiClient: any NearbyBusStopAPIClient
     private let locationProvider: any UserLocationProvider
     private let radiusMeters: Int
     private let resultLimit: Int
+    private let mapSearchMovementThresholdMeters: Double
     private var isRequestInFlight = false
 
     init(
         apiClient: any NearbyBusStopAPIClient,
         locationProvider: any UserLocationProvider,
         radiusMeters: Int = 500,
-        resultLimit: Int = 20
+        resultLimit: Int = 20,
+        mapSearchMovementThresholdMeters: Double = 100
     ) {
         self.apiClient = apiClient
         self.locationProvider = locationProvider
         self.radiusMeters = radiusMeters
         self.resultLimit = resultLimit
+        self.mapSearchMovementThresholdMeters = mapSearchMovementThresholdMeters
     }
 
     var selectedBusStop: NearbyBusStop? {
@@ -52,6 +59,10 @@ final class NearbyBusStopsViewModel {
             return nil
         }
         return busStops.first { $0.stopCode == selectedStopCode }
+    }
+
+    var canSearchMapArea: Bool {
+        pendingMapCenter != nil && !isSearchingMapArea
     }
 
     func setDisplayMode(_ displayMode: NearbyBusStopsDisplayMode) {
@@ -67,6 +78,72 @@ final class NearbyBusStopsViewModel {
         selectedStopCode = busStops.contains { $0.stopCode == stopCode }
             ? stopCode
             : nil
+    }
+
+    func updateVisibleMapCenter(_ center: UserLocation) {
+        guard displayMode == .map,
+              let lastSearchCenter,
+              NearbyMapSearchPolicy.shouldOfferSearch(
+                  from: lastSearchCenter,
+                  to: center,
+                  minimumDistanceMeters: mapSearchMovementThresholdMeters
+              ) else {
+            pendingMapCenter = nil
+            return
+        }
+
+        pendingMapCenter = center
+    }
+
+    func searchPendingMapArea() async {
+        guard state == .loaded,
+              let searchCenter = pendingMapCenter,
+              !isRequestInFlight else {
+            return
+        }
+
+        isRequestInFlight = true
+        isSearchingMapArea = true
+        mapSearchMessage = nil
+        defer {
+            isRequestInFlight = false
+            isSearchingMapArea = false
+        }
+
+        do {
+            let results = try await apiClient.nearbyBusStops(
+                latitude: searchCenter.latitude,
+                longitude: searchCenter.longitude,
+                radiusMeters: radiusMeters,
+                limit: resultLimit
+            )
+            try Task.checkCancellation()
+
+            busStops = results
+            lastSearchCenter = searchCenter
+            if pendingMapCenter == searchCenter {
+                pendingMapCenter = nil
+            }
+            mapRegion = NearbyMapRegion.fitting(
+                userLocation: searchCenter,
+                busStops: results
+            )
+            if let selectedStopCode,
+               !results.contains(where: { $0.stopCode == selectedStopCode }) {
+                self.selectedStopCode = nil
+            }
+            if results.isEmpty {
+                mapSearchMessage = "No bus stops were found within 500 metres of this area."
+            }
+        } catch is CancellationError {
+            return
+        } catch {
+            mapSearchMessage = error.localizedDescription
+        }
+    }
+
+    func dismissMapSearchMessage() {
+        mapSearchMessage = nil
     }
 
     func load() async {
@@ -94,6 +171,9 @@ final class NearbyBusStopsViewModel {
 
             busStops = results
             userLocation = location
+            lastSearchCenter = location
+            pendingMapCenter = nil
+            mapSearchMessage = nil
             mapRegion = NearbyMapRegion.fitting(
                 userLocation: location,
                 busStops: results
@@ -123,5 +203,8 @@ final class NearbyBusStopsViewModel {
         userLocation = nil
         mapRegion = nil
         selectedStopCode = nil
+        lastSearchCenter = nil
+        pendingMapCenter = nil
+        mapSearchMessage = nil
     }
 }
