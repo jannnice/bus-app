@@ -86,9 +86,6 @@ struct NearbyBusStopsMap: View {
                     .padding(.bottom, 8)
             }
         }
-        .onChange(of: region) { _, updatedRegion in
-            cameraPosition = .region(updatedRegion.coordinateRegion)
-        }
         .onMapCameraChange(frequency: .onEnd) { context in
             guard cameraPosition.positionedByUser else {
                 return

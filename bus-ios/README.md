@@ -38,6 +38,8 @@ Map markers reuse the loaded nearby results, highlight favourites, and open a
 stop card with its road, code, distance, favourite action, and arrival link.
 After a meaningful map movement, Search This Area queries the existing nearby
 endpoint around the visible centre without requesting the device location again.
+The result markers update without moving the camera; only the scope button fits
+the camera to the most recent result region.
 Pure map-region and annotation values keep fitting and marker mapping testable
 without requiring MapKit UI automation.
 
