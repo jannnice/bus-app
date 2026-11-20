@@ -2,6 +2,9 @@ import SwiftUI
 
 @main
 struct BusApp: App {
+    @UIApplicationDelegateAdaptor(AppNotificationDelegate.self)
+    private var notificationDelegate
+
     private let apiClient: BackendAPIClient
     private let favoriteBusStopsViewModel: FavoriteBusStopsViewModel
 
