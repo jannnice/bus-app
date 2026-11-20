@@ -16,7 +16,8 @@ bus-app/
 ## Current iOS features
 
 - Bus-stop search by code, landmark, or road name
-- Nearby bus stops using the device location, ordered by distance
+- Nearby bus stops using the device location, shown as a distance-ordered list or MapKit map
+- Selectable map markers with favourite highlighting and live-arrival navigation
 - Clear location permission, restricted-access, empty, and retry states
 - Locally saved favourite stops with deletion and custom ordering
 - Live arrivals after selecting a search result
@@ -140,6 +141,7 @@ Automated tests use fixture data and a mock HTTP server. They do not require an 
 3. Select an iPhone Simulator and run the `BusApp` scheme.
 4. Use the Search tab to find a stop such as `83139`, `grand`, or `Victoria`.
 5. Use the Nearby tab to allow location access and see stops within 500 metres.
+   Switch between List and Map to browse the same nearby results.
 6. Tap a star on a search result, nearby stop, or arrival screen to save it.
 7. Use the Favourites tab to open, delete, or reorder saved stops.
 8. Tap a result in any tab to see its live bus services and next arrivals.
@@ -147,6 +149,10 @@ Automated tests use fixture data and a mock HTTP server. They do not require an 
 The Simulator can use a simulated location from Xcode’s location controls. On a
 physical iPhone, iOS asks for location access only when the Nearby tab needs it.
 If access was denied, the Nearby screen links to the app’s Settings page.
+
+The Nearby map fits the user and returned stops on screen. Tap a marker to see
+the stop name, road, code, and distance, then open live arrivals or toggle its
+favourite status. The scope button restores the fitted map after panning.
 
 Favourites are encoded as JSON and stored locally in the app’s UserDefaults.
 They do not require an account, backend endpoint, or LTA credential.

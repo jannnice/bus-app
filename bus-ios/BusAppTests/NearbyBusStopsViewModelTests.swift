@@ -21,6 +21,16 @@ final class NearbyBusStopsViewModelTests: XCTestCase {
 
         XCTAssertEqual(viewModel.state, .loaded)
         XCTAssertEqual(viewModel.busStops, [expectedStop])
+        XCTAssertEqual(
+            viewModel.userLocation,
+            UserLocation(latitude: 1.2968, longitude: 103.853)
+        )
+        guard let mapRegion = viewModel.mapRegion else {
+            XCTFail("Expected a map region after loading nearby stops")
+            return
+        }
+        XCTAssertEqual(mapRegion.centerLatitude, 1.296825, accuracy: 0.000_001)
+        XCTAssertEqual(mapRegion.centerLongitude, 103.853, accuracy: 0.000_001)
         XCTAssertEqual(locationProvider.requestCount, 1)
         let request = await apiClient.lastRequest
         XCTAssertEqual(
@@ -117,6 +127,31 @@ final class NearbyBusStopsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.state, .idle)
         let request = await apiClient.lastRequest
         XCTAssertNil(request)
+    }
+
+    func testDisplayModeAndMapSelectionAreOwnedByViewModel() async {
+        let expectedStop = makeBusStop()
+        let locationProvider = UserLocationProviderStub(
+            result: .success(UserLocation(latitude: 1.2968, longitude: 103.853))
+        )
+        let apiClient = NearbyBusStopAPIClientStub(result: .success([expectedStop]))
+        let viewModel = NearbyBusStopsViewModel(
+            apiClient: apiClient,
+            locationProvider: locationProvider
+        )
+
+        await viewModel.load()
+        viewModel.setDisplayMode(.map)
+        viewModel.selectBusStop(stopCode: expectedStop.stopCode)
+
+        XCTAssertEqual(viewModel.displayMode, .map)
+        XCTAssertEqual(viewModel.selectedStopCode, expectedStop.stopCode)
+        XCTAssertEqual(viewModel.selectedBusStop, expectedStop)
+
+        viewModel.selectBusStop(stopCode: "99999")
+
+        XCTAssertNil(viewModel.selectedStopCode)
+        XCTAssertNil(viewModel.selectedBusStop)
     }
 
     private func makeBusStop() -> NearbyBusStop {

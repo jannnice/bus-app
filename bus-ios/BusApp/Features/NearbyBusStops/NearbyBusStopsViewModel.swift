@@ -1,6 +1,13 @@
 import Foundation
 import Observation
 
+enum NearbyBusStopsDisplayMode: String, CaseIterable, Identifiable, Sendable {
+    case list
+    case map
+
+    var id: Self { self }
+}
+
 enum NearbyBusStopsViewState: Equatable {
     case idle
     case requestingLocation
@@ -17,6 +24,10 @@ enum NearbyBusStopsViewState: Equatable {
 final class NearbyBusStopsViewModel {
     private(set) var state: NearbyBusStopsViewState = .idle
     private(set) var busStops: [NearbyBusStop] = []
+    private(set) var displayMode: NearbyBusStopsDisplayMode = .list
+    private(set) var userLocation: UserLocation?
+    private(set) var mapRegion: NearbyMapRegion?
+    private(set) var selectedStopCode: String?
 
     private let apiClient: any NearbyBusStopAPIClient
     private let locationProvider: any UserLocationProvider
@@ -34,6 +45,28 @@ final class NearbyBusStopsViewModel {
         self.locationProvider = locationProvider
         self.radiusMeters = radiusMeters
         self.resultLimit = resultLimit
+    }
+
+    var selectedBusStop: NearbyBusStop? {
+        guard let selectedStopCode else {
+            return nil
+        }
+        return busStops.first { $0.stopCode == selectedStopCode }
+    }
+
+    func setDisplayMode(_ displayMode: NearbyBusStopsDisplayMode) {
+        self.displayMode = displayMode
+    }
+
+    func selectBusStop(stopCode: String?) {
+        guard let stopCode else {
+            selectedStopCode = nil
+            return
+        }
+
+        selectedStopCode = busStops.contains { $0.stopCode == stopCode }
+            ? stopCode
+            : nil
     }
 
     func load() async {
@@ -60,19 +93,35 @@ final class NearbyBusStopsViewModel {
             try Task.checkCancellation()
 
             busStops = results
+            userLocation = location
+            mapRegion = NearbyMapRegion.fitting(
+                userLocation: location,
+                busStops: results
+            )
+            if let selectedStopCode,
+               !results.contains(where: { $0.stopCode == selectedStopCode }) {
+                self.selectedStopCode = nil
+            }
             state = results.isEmpty ? .empty : .loaded
         } catch is CancellationError {
             state = previousState
             return
         } catch UserLocationError.permissionDenied {
-            busStops = []
+            clearResults()
             state = .permissionDenied
         } catch UserLocationError.permissionRestricted {
-            busStops = []
+            clearResults()
             state = .permissionRestricted
         } catch {
-            busStops = []
+            clearResults()
             state = .failed(error.localizedDescription)
         }
+    }
+
+    private func clearResults() {
+        busStops = []
+        userLocation = nil
+        mapRegion = nil
+        selectedStopCode = nil
     }
 }

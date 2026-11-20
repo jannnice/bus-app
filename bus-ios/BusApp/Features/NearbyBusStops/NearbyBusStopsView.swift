@@ -29,6 +29,18 @@ struct NearbyBusStopsView: View {
         NavigationStack {
             content
                 .navigationTitle("Nearby Stops")
+                .toolbar {
+                    if viewModel.state == .loaded,
+                       viewModel.displayMode == .map {
+                        ToolbarItem(placement: .topBarTrailing) {
+                            Button {
+                                Task { await viewModel.load() }
+                            } label: {
+                                Label("Refresh", systemImage: "arrow.clockwise")
+                            }
+                        }
+                    }
+                }
         }
         .task {
             guard viewModel.state == .idle else {
@@ -48,31 +60,7 @@ struct NearbyBusStopsView: View {
             ProgressView("Finding nearby bus stops...")
 
         case .loaded:
-            List(viewModel.busStops) { busStop in
-                HStack(spacing: 8) {
-                    NavigationLink {
-                        BusArrivalView(
-                            busStop: busStop.busStop,
-                            apiClient: arrivalAPIClient,
-                            favoriteBusStopsViewModel: favoriteBusStopsViewModel
-                        )
-                    } label: {
-                        NearbyBusStopRow(
-                            busStop: busStop,
-                            distanceFormatter: distanceFormatter
-                        )
-                    }
-
-                    FavoriteToggleButton(
-                        busStop: busStop.busStop,
-                        viewModel: favoriteBusStopsViewModel
-                    )
-                }
-            }
-            .listStyle(.plain)
-            .refreshable {
-                await viewModel.load()
-            }
+            loadedContent
 
         case .empty:
             ContentUnavailableView {
@@ -113,6 +101,74 @@ struct NearbyBusStopsView: View {
                     Task { await viewModel.load() }
                 }
             }
+        }
+    }
+
+    private var displayModeBinding: Binding<NearbyBusStopsDisplayMode> {
+        Binding(
+            get: { viewModel.displayMode },
+            set: viewModel.setDisplayMode
+        )
+    }
+
+    @ViewBuilder
+    private var loadedContent: some View {
+        VStack(spacing: 0) {
+            Picker("Nearby stop view", selection: displayModeBinding) {
+                Label("List", systemImage: "list.bullet")
+                    .tag(NearbyBusStopsDisplayMode.list)
+                Label("Map", systemImage: "map")
+                    .tag(NearbyBusStopsDisplayMode.map)
+            }
+            .pickerStyle(.segmented)
+            .padding(.horizontal)
+            .padding(.vertical, 8)
+
+            switch viewModel.displayMode {
+            case .list:
+                nearbyStopsList
+
+            case .map:
+                if let mapRegion = viewModel.mapRegion {
+                    NearbyBusStopsMap(
+                        busStops: viewModel.busStops,
+                        region: mapRegion,
+                        selectedBusStop: viewModel.selectedBusStop,
+                        arrivalAPIClient: arrivalAPIClient,
+                        favoriteBusStopsViewModel: favoriteBusStopsViewModel,
+                        distanceFormatter: distanceFormatter,
+                        onSelect: viewModel.selectBusStop
+                    )
+                }
+            }
+        }
+    }
+
+    private var nearbyStopsList: some View {
+        List(viewModel.busStops) { busStop in
+            HStack(spacing: 8) {
+                NavigationLink {
+                    BusArrivalView(
+                        busStop: busStop.busStop,
+                        apiClient: arrivalAPIClient,
+                        favoriteBusStopsViewModel: favoriteBusStopsViewModel
+                    )
+                } label: {
+                    NearbyBusStopRow(
+                        busStop: busStop,
+                        distanceFormatter: distanceFormatter
+                    )
+                }
+
+                FavoriteToggleButton(
+                    busStop: busStop.busStop,
+                    viewModel: favoriteBusStopsViewModel
+                )
+            }
+        }
+        .listStyle(.plain)
+        .refreshable {
+            await viewModel.load()
         }
     }
 }
