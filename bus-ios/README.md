@@ -10,6 +10,7 @@ BusApp/
 ├── App/                         App entry point and configuration
 ├── Core/API/                    Backend client and error handling
 ├── Core/Location/               Testable device-location provider
+├── Core/Notifications/          One-off local-notification protocol and adapter
 ├── Core/Persistence/            Favourite-stop storage protocol and UserDefaults adapter
 ├── Features/BusArrivals/        Live-arrival models, state, formatting, and UI
 ├── Features/FavoriteBusStops/   Shared favourite state and SwiftUI views
@@ -30,6 +31,8 @@ BusAppTests/                     Model, networking, and state tests
 6. Tap a star to save a stop locally.
 7. Use Favourites to open, delete, or reorder saved stops.
 8. Tap a result from any tab to view live arrivals for that stop.
+9. Tap a service’s bell and choose an available lead time to create a one-off
+   reminder for the next displayed bus.
 
 For Simulator testing, choose a simulated location from Xcode’s location
 controls. The Nearby screen handles disabled, denied, and restricted location
@@ -51,6 +54,13 @@ The detail screen loads `GET /api/v1/arrivals/{stopCode}` through the backend,
 supports pull-to-refresh, and refreshes automatically about every 20 seconds
 while it is visible. It shows up to three predictions per service, including
 arrival time, passenger load, wheelchair accessibility, and bus type.
+
+The reminder planner snapshots the first displayed prediction and schedules a
+`UNCalendarNotificationTrigger` with `repeats` set to `false`. It never follows
+later buses automatically. A deterministic stop/service identifier means a new
+choice replaces the existing pending reminder instead of creating duplicates.
+Permission, planning, scheduling, pending-reminder restoration, cancellation,
+and the current time are separated behind testable types.
 
 `BackendBaseURL` in `BusApp/Resources/Info.plist` defaults to
 `http://localhost:8080`. Replace it with your Mac's local network address when

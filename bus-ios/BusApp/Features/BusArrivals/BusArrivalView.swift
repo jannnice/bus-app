@@ -1,9 +1,12 @@
 import SwiftUI
 
 struct BusArrivalView: View {
+    @Environment(\.openURL) private var openURL
+
     let busStop: BusStop
 
     @State private var viewModel: BusArrivalViewModel
+    @State private var reminderViewModel: ArrivalReminderViewModel
     private let timeFormatter: ArrivalTimeFormatter
     private let favoriteBusStopsViewModel: FavoriteBusStopsViewModel
 
@@ -11,6 +14,7 @@ struct BusArrivalView: View {
         busStop: BusStop,
         apiClient: any BusArrivalAPIClient,
         favoriteBusStopsViewModel: FavoriteBusStopsViewModel,
+        reminderScheduler: any ArrivalReminderScheduling = UserNotificationArrivalReminderScheduler(),
         timeFormatter: ArrivalTimeFormatter = ArrivalTimeFormatter()
     ) {
         self.busStop = busStop
@@ -20,6 +24,13 @@ struct BusArrivalView: View {
             initialValue: BusArrivalViewModel(
                 stopCode: busStop.stopCode,
                 apiClient: apiClient
+            )
+        )
+        _reminderViewModel = State(
+            initialValue: ArrivalReminderViewModel(
+                stopCode: busStop.stopCode,
+                stopName: busStop.description,
+                scheduler: reminderScheduler
             )
         )
     }
@@ -59,6 +70,21 @@ struct BusArrivalView: View {
         }
         .task {
             await viewModel.runAutoRefresh()
+        }
+        .task {
+            await reminderViewModel.loadPendingReminders()
+        }
+        .alert("Reminder Unavailable", isPresented: reminderErrorIsPresented) {
+            if reminderViewModel.permissionDenied {
+                Button("Open Settings") {
+                    openURL(URL(string: UIApplication.openSettingsURLString)!)
+                }
+            }
+            Button("OK", role: .cancel) {
+                reminderViewModel.dismissError()
+            }
+        } message: {
+            Text(reminderViewModel.errorMessage ?? "The reminder could not be created.")
         }
     }
 
@@ -102,17 +128,32 @@ struct BusArrivalView: View {
                 ForEach(viewModel.services) { service in
                     BusServiceArrivalRow(
                         service: service,
-                        timeFormatter: timeFormatter
+                        timeFormatter: timeFormatter,
+                        reminderViewModel: reminderViewModel
                     )
                 }
             }
         }
+    }
+
+    private var reminderErrorIsPresented: Binding<Bool> {
+        Binding(
+            get: { reminderViewModel.errorMessage != nil },
+            set: { isPresented in
+                if !isPresented {
+                    reminderViewModel.dismissError()
+                }
+            }
+        )
     }
 }
 
 private struct BusServiceArrivalRow: View {
     let service: BusServiceArrival
     let timeFormatter: ArrivalTimeFormatter
+    let reminderViewModel: ArrivalReminderViewModel
+
+    @State private var showingReminderOptions = false
 
     var body: some View {
         TimelineView(.periodic(from: .now, by: 15)) { context in
@@ -126,6 +167,8 @@ private struct BusServiceArrivalRow: View {
                     Text(service.operator)
                         .font(.caption)
                         .foregroundStyle(.secondary)
+
+                    reminderButton
                 }
 
                 HStack(alignment: .top, spacing: 8) {
@@ -142,6 +185,61 @@ private struct BusServiceArrivalRow: View {
                 }
             }
             .padding(.vertical, 6)
+        }
+        .confirmationDialog(
+            "Bus \(service.serviceNo) Reminder",
+            isPresented: $showingReminderOptions,
+            titleVisibility: .visible
+        ) {
+            reminderActions
+        } message: {
+            Text("This reminder applies only to the next displayed bus and will not repeat.")
+        }
+    }
+
+    @ViewBuilder
+    private var reminderButton: some View {
+        if reminderViewModel.schedulingServiceNo == service.serviceNo {
+            ProgressView()
+                .controlSize(.small)
+                .accessibilityLabel("Scheduling reminder")
+        } else if reminderViewModel.activeReminder(for: service.serviceNo) != nil
+                    || !reminderViewModel.availableLeadTimes(for: service).isEmpty {
+            Button {
+                showingReminderOptions = true
+            } label: {
+                Image(
+                    systemName: reminderViewModel.activeReminder(for: service.serviceNo) == nil
+                        ? "bell.badge"
+                        : "bell.fill"
+                )
+            }
+            .buttonStyle(.borderless)
+            .accessibilityLabel(
+                reminderViewModel.activeReminder(for: service.serviceNo) == nil
+                    ? "Set one-off reminder for bus \(service.serviceNo)"
+                    : "Manage reminder for bus \(service.serviceNo)"
+            )
+        }
+    }
+
+    @ViewBuilder
+    private var reminderActions: some View {
+        if let reminder = reminderViewModel.activeReminder(for: service.serviceNo) {
+            Button("Cancel \(reminder.leadTimeMinutes)-Minute Reminder", role: .destructive) {
+                reminderViewModel.cancelReminder(for: service.serviceNo)
+            }
+        } else {
+            ForEach(reminderViewModel.availableLeadTimes(for: service), id: \.self) { minutes in
+                Button("Notify \(minutes) Minute\(minutes == 1 ? "" : "s") Before") {
+                    Task {
+                        await reminderViewModel.scheduleReminder(
+                            for: service,
+                            leadTimeMinutes: minutes
+                        )
+                    }
+                }
+            }
         }
     }
 

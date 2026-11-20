@@ -23,6 +23,7 @@ bus-app/
 - Live arrivals after selecting a search result
 - Up to three predictions per service with load, accessibility, and bus type
 - Pull-to-refresh and automatic refresh about every 20 seconds while visible
+- One-off local reminders for the next displayed bus, with 1, 3, 5, or 10-minute lead times
 - Typed async networking using `URLSession`
 - Loading, empty-results, empty-service, and backend-error states
 - Configurable backend URL with no LTA key stored on the device
@@ -199,6 +200,8 @@ Automated tests use fixture data and a mock HTTP server. They do not require an 
 6. Tap a star on a search result, nearby stop, or arrival screen to save it.
 7. Use the Favourites tab to open, delete, or reorder saved stops.
 8. Tap a result in any tab to see its live bus services and next arrivals.
+9. Tap the bell beside a service to schedule a one-off reminder for its next
+   displayed bus. The app asks for notification permission only when needed.
 
 The Simulator can use a simulated location from Xcode’s location controls. On a
 physical iPhone, iOS asks for location access only when the Nearby tab needs it.
@@ -217,6 +220,12 @@ The arrivals screen refreshes while it is visible and can also be refreshed by
 pulling down. Arrival times from the backend include their time-zone offset;
 the app decodes them as absolute dates and displays `Arr`, whole minutes, or an
 em dash when no prediction is available.
+
+Arrival reminders are local, non-repeating notifications based on the estimate
+shown when the reminder is created. They do not subscribe to the service or
+automatically schedule reminders for later buses. Creating another reminder for
+the same stop and service replaces its pending reminder, and an active reminder
+can be cancelled from the same bell button.
 
 The Simulator uses `http://localhost:8080`, configured as `BackendBaseURL` in
 `BusApp/Resources/Info.plist`. For a physical iPhone, change that value to your
