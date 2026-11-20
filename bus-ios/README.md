@@ -13,7 +13,7 @@ BusApp/
 ├── Core/Persistence/            Favourite-stop storage protocol and UserDefaults adapter
 ├── Features/BusArrivals/        Live-arrival models, state, formatting, and UI
 ├── Features/FavoriteBusStops/   Shared favourite state and SwiftUI views
-├── Features/NearbyBusStops/     Nearby-stop models, state, formatting, and UI
+├── Features/NearbyBusStops/     Nearby list/map models, state, formatting, and UI
 ├── Features/BusStopSearch/      Search model, state, and SwiftUI views
 └── Resources/                   Application configuration
 BusAppTests/                     Model, networking, and state tests
@@ -25,7 +25,8 @@ BusAppTests/                     Model, networking, and state tests
 2. Open `BusApp.xcodeproj`.
 3. Run the `BusApp` scheme on an iPhone Simulator.
 4. In Search, enter a stop code, landmark, or road name and press Search.
-5. In Nearby, allow location access to list stops within 500 metres.
+5. In Nearby, allow location access, then switch between the distance-ordered
+   list and MapKit map of stops within 500 metres.
 6. Tap a star to save a stop locally.
 7. Use Favourites to open, delete, or reorder saved stops.
 8. Tap a result from any tab to view live arrivals for that stop.
@@ -33,6 +34,14 @@ BusAppTests/                     Model, networking, and state tests
 For Simulator testing, choose a simulated location from Xcode’s location
 controls. The Nearby screen handles disabled, denied, and restricted location
 access separately and offers a Settings shortcut when access was denied.
+Map markers reuse the loaded nearby results, highlight favourites, and open a
+stop card with its road, code, distance, favourite action, and arrival link.
+After a meaningful map movement, Search This Area queries the existing nearby
+endpoint around the visible centre without requesting the device location again.
+The result markers update without moving the camera; only the scope button fits
+the camera to the most recent result region.
+Pure map-region and annotation values keep fitting and marker mapping testable
+without requiring MapKit UI automation.
 
 The Search, Nearby, Favourites, and arrival screens share one observable
 favourites ViewModel. Its storage dependency is a protocol, while the app uses a
