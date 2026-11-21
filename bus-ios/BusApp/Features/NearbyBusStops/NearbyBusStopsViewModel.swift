@@ -24,7 +24,7 @@ enum NearbyBusStopsViewState: Equatable {
 final class NearbyBusStopsViewModel {
     private(set) var state: NearbyBusStopsViewState = .idle
     private(set) var busStops: [NearbyBusStop] = []
-    private(set) var displayMode: NearbyBusStopsDisplayMode = .list
+    private(set) var displayMode: NearbyBusStopsDisplayMode = .map
     private(set) var userLocation: UserLocation?
     private(set) var mapRegion: NearbyMapRegion?
     private(set) var selectedStopCode: String?

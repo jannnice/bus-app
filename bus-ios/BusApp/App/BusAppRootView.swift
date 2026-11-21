@@ -3,9 +3,31 @@ import SwiftUI
 struct BusAppRootView: View {
     let apiClient: BackendAPIClient
     let favoriteBusStopsViewModel: FavoriteBusStopsViewModel
+    @State private var arrivalPreviewStore: BusStopArrivalPreviewStore
+
+    init(
+        apiClient: BackendAPIClient,
+        favoriteBusStopsViewModel: FavoriteBusStopsViewModel
+    ) {
+        self.apiClient = apiClient
+        self.favoriteBusStopsViewModel = favoriteBusStopsViewModel
+        _arrivalPreviewStore = State(
+            initialValue: BusStopArrivalPreviewStore(apiClient: apiClient)
+        )
+    }
 
     var body: some View {
         TabView {
+            NearbyBusStopsView(
+                apiClient: apiClient,
+                locationProvider: CoreLocationProvider(),
+                favoriteBusStopsViewModel: favoriteBusStopsViewModel,
+                arrivalPreviewStore: arrivalPreviewStore
+            )
+            .tabItem {
+                Label("Nearby", systemImage: "location")
+            }
+
             BusStopSearchView(
                 apiClient: apiClient,
                 favoriteBusStopsViewModel: favoriteBusStopsViewModel
@@ -14,18 +36,10 @@ struct BusAppRootView: View {
                     Label("Search", systemImage: "magnifyingglass")
                 }
 
-            NearbyBusStopsView(
-                apiClient: apiClient,
-                locationProvider: CoreLocationProvider(),
-                favoriteBusStopsViewModel: favoriteBusStopsViewModel
-            )
-            .tabItem {
-                Label("Nearby", systemImage: "location")
-            }
-
             FavoriteBusStopsView(
                 apiClient: apiClient,
-                viewModel: favoriteBusStopsViewModel
+                viewModel: favoriteBusStopsViewModel,
+                arrivalPreviewStore: arrivalPreviewStore
             )
             .tabItem {
                 Label("Favourites", systemImage: "star")

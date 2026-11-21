@@ -140,7 +140,10 @@ final class NearbyBusStopsViewModelTests: XCTestCase {
             locationProvider: locationProvider
         )
 
+        XCTAssertEqual(viewModel.displayMode, .map)
         await viewModel.load()
+        viewModel.setDisplayMode(.list)
+        XCTAssertEqual(viewModel.displayMode, .list)
         viewModel.setDisplayMode(.map)
         viewModel.selectBusStop(stopCode: expectedStop.stopCode)
 

@@ -18,8 +18,10 @@ bus-app/
 - Bus-stop search by code, landmark, or road name
 - Nearby bus stops using the device location, shown as a distance-ordered list or MapKit map
 - Selectable map markers with favourite highlighting and live-arrival navigation
+- Nearby map as the landing tab, with a bottom carousel of stop and arrival previews
 - Clear location permission, restricted-access, empty, and retry states
 - Locally saved favourite stops with deletion and custom ordering
+- Four earliest next-service arrivals shown for nearby and favourite stops
 - Live arrivals after selecting a search result
 - Up to three predictions per service with load, accessibility, and bus type
 - Pull-to-refresh and automatic refresh about every 20 seconds while visible
@@ -194,9 +196,10 @@ Automated tests use fixture data and a mock HTTP server. They do not require an 
 1. Start the backend on port `8080`.
 2. Open `bus-ios/BusApp.xcodeproj` in Xcode.
 3. Select an iPhone Simulator and run the `BusApp` scheme.
-4. Use the Search tab to find a stop such as `83139`, `grand`, or `Victoria`.
-5. Use the Nearby tab to allow location access and see stops within 500 metres.
-   Switch between List and Map to browse the same nearby results.
+4. The app opens on the Nearby map. Allow location access to see stops within
+   500 metres, then swipe through the bottom stop cards and their arrival previews.
+5. Switch between Map and List when needed, or use Search to find a stop such as
+   `83139`, `grand`, or `Victoria`.
 6. Tap a star on a search result, nearby stop, or arrival screen to save it.
 7. Use the Favourites tab to open, delete, or reorder saved stops.
 8. Tap a result in any tab to see its live bus services and next arrivals.
@@ -212,6 +215,10 @@ the stop name, road, code, and distance, then open live arrivals or toggle its
 favourite status. After moving the map, tap **Search This Area** to load stops
 within 500 metres of the new map centre without changing the current camera
 position. The scope button explicitly fits the most recent results after panning.
+
+Nearby and favourite stop previews show the four services whose next predicted
+bus arrives first. Visible previews share a small in-memory cache and refresh
+approximately every 20 seconds without blocking navigation to full arrivals.
 
 Favourites are encoded as JSON and stored locally in the app’s UserDefaults.
 They do not require an account, backend endpoint, or LTA credential.

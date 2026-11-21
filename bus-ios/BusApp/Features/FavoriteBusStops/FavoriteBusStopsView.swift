@@ -3,6 +3,18 @@ import SwiftUI
 struct FavoriteBusStopsView: View {
     let apiClient: any BusArrivalAPIClient
     let viewModel: FavoriteBusStopsViewModel
+    let arrivalPreviewStore: BusStopArrivalPreviewStore
+
+    init(
+        apiClient: any BusArrivalAPIClient,
+        viewModel: FavoriteBusStopsViewModel,
+        arrivalPreviewStore: BusStopArrivalPreviewStore? = nil
+    ) {
+        self.apiClient = apiClient
+        self.viewModel = viewModel
+        self.arrivalPreviewStore = arrivalPreviewStore
+            ?? BusStopArrivalPreviewStore(apiClient: apiClient)
+    }
 
     var body: some View {
         NavigationStack {
@@ -23,7 +35,15 @@ struct FavoriteBusStopsView: View {
                                     favoriteBusStopsViewModel: viewModel
                                 )
                             } label: {
-                                BusStopRow(busStop: busStop)
+                                VStack(alignment: .leading, spacing: 10) {
+                                    BusStopRow(busStop: busStop)
+
+                                    BusStopArrivalPreviewView(
+                                        stopCode: busStop.stopCode,
+                                        store: arrivalPreviewStore
+                                    )
+                                }
+                                .padding(.vertical, 4)
                             }
                         }
                         .onDelete(perform: viewModel.remove)
