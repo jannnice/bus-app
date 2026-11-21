@@ -62,9 +62,25 @@ choice replaces the existing pending reminder instead of creating duplicates.
 Permission, planning, scheduling, pending-reminder restoration, cancellation,
 and the current time are separated behind testable types.
 
-`BackendBaseURL` in `BusApp/Resources/Info.plist` defaults to
-`http://localhost:8080`. Replace it with your Mac's local network address when
-running on a physical iPhone.
+Debug builds use `http://localhost:8080`, while Release builds use
+`https://bus-backend-ykuw.onrender.com` and authenticate with `X-App-Token`.
+
+Create the ignored local configuration before running a Release build:
+
+```bash
+cp Config/Secrets.xcconfig.example Config/Secrets.xcconfig
+```
+
+Replace the placeholder in `Secrets.xcconfig` with the same `APP_API_TOKEN`
+configured in Render. A hexadecimal token generated with
+`openssl rand -hex 32` is safe to use directly. If an existing base64 token
+contains `//`, rotate it in Render because `//` begins an xcconfig comment. For
+local Debug development on a physical iPhone, set `LOCAL_BACKEND_HOST` in the
+same file to the Mac's local-network address. Simulator development can keep
+`localhost`.
+
+Select the shared **BusApp Hosted** scheme to run the Release configuration
+against Render. Use the normal **BusApp** scheme for local Debug development.
 
 The iOS app never talks to LTA DataMall directly and does not contain an LTA
 account key.

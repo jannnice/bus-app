@@ -2,14 +2,17 @@ import Foundation
 
 struct BackendAPIClient: BusStopAPIClient, BusArrivalAPIClient, NearbyBusStopAPIClient {
     private let baseURL: URL
+    private let apiToken: String?
     private let session: URLSession
     private let decoder: JSONDecoder
 
     init(
         baseURL: URL,
+        apiToken: String? = nil,
         session: URLSession = .shared
     ) {
         self.baseURL = baseURL
+        self.apiToken = apiToken?.trimmingCharacters(in: .whitespacesAndNewlines)
         self.session = session
 
         let decoder = JSONDecoder()
@@ -90,7 +93,12 @@ struct BackendAPIClient: BusStopAPIClient, BusArrivalAPIClient, NearbyBusStopAPI
     }
 
     private func responseData(from url: URL) async throws -> Data {
-        let (data, response) = try await session.data(from: url)
+        var request = URLRequest(url: url)
+        if let apiToken, !apiToken.isEmpty {
+            request.setValue(apiToken, forHTTPHeaderField: "X-App-Token")
+        }
+
+        let (data, response) = try await session.data(for: request)
         guard let httpResponse = response as? HTTPURLResponse else {
             throw BackendAPIError.invalidResponse
         }

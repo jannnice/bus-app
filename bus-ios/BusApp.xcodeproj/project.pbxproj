@@ -119,6 +119,8 @@
 		200000000000000000000031 /* ArrivalReminderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrivalReminderViewModel.swift; sourceTree = "<group>"; };
 		200000000000000000000032 /* ArrivalReminderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrivalReminderTests.swift; sourceTree = "<group>"; };
 		200000000000000000000033 /* ArrivalReminderViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrivalReminderViewModelTests.swift; sourceTree = "<group>"; };
+		200000000000000000000034 /* Backend.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Backend.xcconfig; sourceTree = "<group>"; };
+		200000000000000000000035 /* Secrets.xcconfig.example */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig.example; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -142,6 +144,7 @@
 		700000000000000000000001 = {
 			isa = PBXGroup;
 			children = (
+				700000000000000000000011 /* Config */,
 				700000000000000000000002 /* BusApp */,
 				700000000000000000000009 /* BusAppTests */,
 				70000000000000000000000A /* Products */,
@@ -314,6 +317,15 @@
 				20000000000000000000002F /* UserNotificationArrivalReminderScheduler.swift */,
 			);
 			path = Notifications;
+			sourceTree = "<group>";
+		};
+		700000000000000000000011 /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				200000000000000000000034 /* Backend.xcconfig */,
+				200000000000000000000035 /* Secrets.xcconfig.example */,
+			);
+			path = Config;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -518,7 +530,9 @@
 		};
 		A00000000000000000000003 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 200000000000000000000034 /* Backend.xcconfig */;
 			buildSettings = {
+				BACKEND_BASE_URL = "http://$(LOCAL_BACKEND_HOST):$(LOCAL_BACKEND_PORT)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
@@ -537,7 +551,9 @@
 		};
 		A00000000000000000000004 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 200000000000000000000034 /* Backend.xcconfig */;
 			buildSettings = {
+				BACKEND_BASE_URL = "https://bus-backend-ykuw.onrender.com";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
