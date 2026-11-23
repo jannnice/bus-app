@@ -7,16 +7,20 @@ struct NearbyBusStopsView: View {
     private let arrivalAPIClient: any BusArrivalAPIClient
     private let distanceFormatter: DistanceFormatter
     private let favoriteBusStopsViewModel: FavoriteBusStopsViewModel
+    private let arrivalPreviewStore: BusStopArrivalPreviewStore
 
     init(
         apiClient: any NearbyBusStopAPIClient & BusArrivalAPIClient,
         locationProvider: any UserLocationProvider,
         favoriteBusStopsViewModel: FavoriteBusStopsViewModel,
+        arrivalPreviewStore: BusStopArrivalPreviewStore? = nil,
         distanceFormatter: DistanceFormatter = DistanceFormatter()
     ) {
         arrivalAPIClient = apiClient
         self.distanceFormatter = distanceFormatter
         self.favoriteBusStopsViewModel = favoriteBusStopsViewModel
+        self.arrivalPreviewStore = arrivalPreviewStore
+            ?? BusStopArrivalPreviewStore(apiClient: apiClient)
         _viewModel = State(
             initialValue: NearbyBusStopsViewModel(
                 apiClient: apiClient,
@@ -29,6 +33,7 @@ struct NearbyBusStopsView: View {
         NavigationStack {
             content
                 .navigationTitle("Nearby Stops")
+                .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     if viewModel.state == .loaded,
                        viewModel.displayMode == .map {
@@ -137,18 +142,22 @@ struct NearbyBusStopsView: View {
                 nearbyStopsList
 
             case .map:
-                if let mapRegion = viewModel.mapRegion {
+                if let mapRegion = viewModel.mapRegion,
+                   let homeMapRegion = viewModel.homeMapRegion {
                     NearbyBusStopsMap(
                         busStops: viewModel.busStops,
                         region: mapRegion,
+                        homeRegion: homeMapRegion,
                         selectedBusStop: viewModel.selectedBusStop,
                         arrivalAPIClient: arrivalAPIClient,
                         favoriteBusStopsViewModel: favoriteBusStopsViewModel,
+                        arrivalPreviewStore: arrivalPreviewStore,
                         distanceFormatter: distanceFormatter,
                         canSearchMapArea: viewModel.canSearchMapArea,
                         isSearchingMapArea: viewModel.isSearchingMapArea,
                         onSelect: viewModel.selectBusStop,
                         onVisibleCenterChange: viewModel.updateVisibleMapCenter,
+                        onRecenterToUserLocation: viewModel.searchUserLocationArea,
                         onSearchMapArea: viewModel.searchPendingMapArea
                     )
                 }

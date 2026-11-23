@@ -24,7 +24,7 @@ enum NearbyBusStopsViewState: Equatable {
 final class NearbyBusStopsViewModel {
     private(set) var state: NearbyBusStopsViewState = .idle
     private(set) var busStops: [NearbyBusStop] = []
-    private(set) var displayMode: NearbyBusStopsDisplayMode = .list
+    private(set) var displayMode: NearbyBusStopsDisplayMode = .map
     private(set) var userLocation: UserLocation?
     private(set) var mapRegion: NearbyMapRegion?
     private(set) var selectedStopCode: String?
@@ -65,6 +65,13 @@ final class NearbyBusStopsViewModel {
         pendingMapCenter != nil && !isSearchingMapArea
     }
 
+    var homeMapRegion: NearbyMapRegion? {
+        guard let userLocation else {
+            return nil
+        }
+        return .centered(on: userLocation)
+    }
+
     func setDisplayMode(_ displayMode: NearbyBusStopsDisplayMode) {
         self.displayMode = displayMode
     }
@@ -95,10 +102,23 @@ final class NearbyBusStopsViewModel {
         pendingMapCenter = center
     }
 
+    func searchUserLocationArea() async {
+        guard let userLocation else {
+            return
+        }
+        pendingMapCenter = nil
+        await searchMapArea(at: userLocation)
+    }
+
     func searchPendingMapArea() async {
-        guard state == .loaded,
-              let searchCenter = pendingMapCenter,
-              !isRequestInFlight else {
+        guard let searchCenter = pendingMapCenter else {
+            return
+        }
+        await searchMapArea(at: searchCenter)
+    }
+
+    private func searchMapArea(at searchCenter: UserLocation) async {
+        guard state == .loaded, !isRequestInFlight else {
             return
         }
 
@@ -124,10 +144,7 @@ final class NearbyBusStopsViewModel {
             if pendingMapCenter == searchCenter {
                 pendingMapCenter = nil
             }
-            mapRegion = NearbyMapRegion.fitting(
-                userLocation: searchCenter,
-                busStops: results
-            )
+            mapRegion = .centered(on: searchCenter)
             if let selectedStopCode,
                !results.contains(where: { $0.stopCode == selectedStopCode }) {
                 self.selectedStopCode = nil
@@ -174,10 +191,7 @@ final class NearbyBusStopsViewModel {
             lastSearchCenter = location
             pendingMapCenter = nil
             mapSearchMessage = nil
-            mapRegion = NearbyMapRegion.fitting(
-                userLocation: location,
-                busStops: results
-            )
+            mapRegion = .centered(on: location)
             if let selectedStopCode,
                !results.contains(where: { $0.stopCode == selectedStopCode }) {
                 self.selectedStopCode = nil

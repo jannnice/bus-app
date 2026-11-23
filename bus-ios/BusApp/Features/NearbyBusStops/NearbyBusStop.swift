@@ -20,3 +20,14 @@ struct NearbyBusStop: Decodable, Equatable, Identifiable, Sendable {
         )
     }
 }
+
+enum NearbyBusStopCarouselOrdering {
+    static func favoritesFirst(
+        _ busStops: [NearbyBusStop],
+        favoriteStopCodes: Set<String>
+    ) -> [NearbyBusStop] {
+        let favorites = busStops.filter { favoriteStopCodes.contains($0.stopCode) }
+        let remainingStops = busStops.filter { !favoriteStopCodes.contains($0.stopCode) }
+        return favorites + remainingStops
+    }
+}

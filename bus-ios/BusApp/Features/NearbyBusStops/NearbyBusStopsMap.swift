@@ -4,14 +4,17 @@ import SwiftUI
 struct NearbyBusStopsMap: View {
     let busStops: [NearbyBusStop]
     let region: NearbyMapRegion
+    let homeRegion: NearbyMapRegion
     let selectedBusStop: NearbyBusStop?
     let arrivalAPIClient: any BusArrivalAPIClient
     let favoriteBusStopsViewModel: FavoriteBusStopsViewModel
+    let arrivalPreviewStore: BusStopArrivalPreviewStore
     let distanceFormatter: DistanceFormatter
     let canSearchMapArea: Bool
     let isSearchingMapArea: Bool
     let onSelect: (String?) -> Void
     let onVisibleCenterChange: (UserLocation) -> Void
+    let onRecenterToUserLocation: () async -> Void
     let onSearchMapArea: () async -> Void
 
     @State private var cameraPosition: MapCameraPosition
@@ -19,26 +22,32 @@ struct NearbyBusStopsMap: View {
     init(
         busStops: [NearbyBusStop],
         region: NearbyMapRegion,
+        homeRegion: NearbyMapRegion,
         selectedBusStop: NearbyBusStop?,
         arrivalAPIClient: any BusArrivalAPIClient,
         favoriteBusStopsViewModel: FavoriteBusStopsViewModel,
+        arrivalPreviewStore: BusStopArrivalPreviewStore,
         distanceFormatter: DistanceFormatter,
         canSearchMapArea: Bool,
         isSearchingMapArea: Bool,
         onSelect: @escaping (String?) -> Void,
         onVisibleCenterChange: @escaping (UserLocation) -> Void,
+        onRecenterToUserLocation: @escaping () async -> Void,
         onSearchMapArea: @escaping () async -> Void
     ) {
         self.busStops = busStops
         self.region = region
+        self.homeRegion = homeRegion
         self.selectedBusStop = selectedBusStop
         self.arrivalAPIClient = arrivalAPIClient
         self.favoriteBusStopsViewModel = favoriteBusStopsViewModel
+        self.arrivalPreviewStore = arrivalPreviewStore
         self.distanceFormatter = distanceFormatter
         self.canSearchMapArea = canSearchMapArea
         self.isSearchingMapArea = isSearchingMapArea
         self.onSelect = onSelect
         self.onVisibleCenterChange = onVisibleCenterChange
+        self.onRecenterToUserLocation = onRecenterToUserLocation
         self.onSearchMapArea = onSearchMapArea
         _cameraPosition = State(initialValue: .region(region.coordinateRegion))
     }
@@ -64,7 +73,12 @@ struct NearbyBusStopsMap: View {
         }
         .overlay(alignment: .topTrailing) {
             Button {
-                cameraPosition = .region(region.coordinateRegion)
+                withAnimation(.easeInOut(duration: 0.35)) {
+                    cameraPosition = .region(homeRegion.coordinateRegion)
+                }
+                Task {
+                    await onRecenterToUserLocation()
+                }
             } label: {
                 Image(systemName: "scope")
                     .font(.headline)
@@ -73,17 +87,24 @@ struct NearbyBusStopsMap: View {
             }
             .buttonStyle(.plain)
             .padding()
-            .accessibilityLabel("Show all nearby stops")
+            .disabled(isSearchingMapArea)
+            .accessibilityLabel("Go to my location")
+            .accessibilityHint("Centers the map and reloads nearby bus stops")
         }
         .overlay(alignment: .top) {
             searchMapAreaControl
                 .padding(.top, 8)
         }
         .safeAreaInset(edge: .bottom) {
-            if let selectedBusStop {
-                selectedStopCard(for: selectedBusStop)
-                    .padding(.horizontal)
-                    .padding(.bottom, 8)
+            if !busStops.isEmpty {
+                NearbyBusStopsPreviewPanel(
+                    busStops: busStops,
+                    selectedStopCode: selectedBusStop?.stopCode,
+                    arrivalAPIClient: arrivalAPIClient,
+                    favoriteBusStopsViewModel: favoriteBusStopsViewModel,
+                    arrivalPreviewStore: arrivalPreviewStore,
+                    distanceFormatter: distanceFormatter
+                )
             }
         }
         .onMapCameraChange(frequency: .onEnd) { context in
@@ -154,53 +175,6 @@ struct NearbyBusStopsMap: View {
         .accessibilityHint("Shows details for this bus stop")
     }
 
-    private func selectedStopCard(for nearbyBusStop: NearbyBusStop) -> some View {
-        HStack(alignment: .top, spacing: 12) {
-            NavigationLink {
-                BusArrivalView(
-                    busStop: nearbyBusStop.busStop,
-                    apiClient: arrivalAPIClient,
-                    favoriteBusStopsViewModel: favoriteBusStopsViewModel
-                )
-            } label: {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(nearbyBusStop.description)
-                        .font(.headline)
-                        .foregroundStyle(.primary)
-
-                    Text(nearbyBusStop.roadName)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-
-                    Text(
-                        "Stop \(nearbyBusStop.stopCode) · "
-                            + distanceFormatter.string(for: nearbyBusStop.distanceMeters)
-                    )
-                    .font(.caption.monospacedDigit())
-                    .foregroundStyle(.secondary)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-            }
-            .buttonStyle(.plain)
-
-            FavoriteToggleButton(
-                busStop: nearbyBusStop.busStop,
-                viewModel: favoriteBusStopsViewModel
-            )
-
-            Button {
-                onSelect(nil)
-            } label: {
-                Image(systemName: "xmark.circle.fill")
-                    .foregroundStyle(.secondary)
-            }
-            .buttonStyle(.plain)
-            .accessibilityLabel("Close stop details")
-        }
-        .padding()
-        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 16))
-        .shadow(radius: 3, y: 1)
-    }
 }
 
 private extension NearbyMapAnnotation {

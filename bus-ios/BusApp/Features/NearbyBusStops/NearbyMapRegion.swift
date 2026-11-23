@@ -21,10 +21,25 @@ struct NearbyMapAnnotation: Equatable, Identifiable, Sendable {
 }
 
 struct NearbyMapRegion: Equatable, Sendable {
+    // About 1.1 km at Singapore's latitude, leaving useful context around a 500 m search radius.
+    static let defaultNearbySpan = 0.01
+
     let centerLatitude: Double
     let centerLongitude: Double
     let latitudeDelta: Double
     let longitudeDelta: Double
+
+    static func centered(
+        on userLocation: UserLocation,
+        span: Double = NearbyMapRegion.defaultNearbySpan
+    ) -> NearbyMapRegion {
+        NearbyMapRegion(
+            centerLatitude: userLocation.latitude,
+            centerLongitude: userLocation.longitude,
+            latitudeDelta: span,
+            longitudeDelta: span
+        )
+    }
 
     static func fitting(
         userLocation: UserLocation,

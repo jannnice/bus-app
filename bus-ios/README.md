@@ -12,7 +12,7 @@ BusApp/
 ├── Core/Location/               Testable device-location provider
 ├── Core/Notifications/          One-off local-notification protocol and adapter
 ├── Core/Persistence/            Favourite-stop storage protocol and UserDefaults adapter
-├── Features/BusArrivals/        Live-arrival models, state, formatting, and UI
+├── Features/BusArrivals/        Full arrivals plus shared stop-preview state and UI
 ├── Features/FavoriteBusStops/   Shared favourite state and SwiftUI views
 ├── Features/NearbyBusStops/     Nearby list/map models, state, formatting, and UI
 ├── Features/BusStopSearch/      Search model, state, and SwiftUI views
@@ -25,9 +25,10 @@ BusAppTests/                     Model, networking, and state tests
 1. Start the backend from `../bus-backend` with `./gradlew bootRun`.
 2. Open `BusApp.xcodeproj`.
 3. Run the `BusApp` scheme on an iPhone Simulator.
-4. In Search, enter a stop code, landmark, or road name and press Search.
-5. In Nearby, allow location access, then switch between the distance-ordered
-   list and MapKit map of stops within 500 metres.
+4. The app opens on Nearby in Map mode. Allow location access, then swipe the
+   bottom cards to browse stops and the four earliest next-service arrivals.
+5. Switch to List when needed, or use Search to enter a stop code, landmark, or
+   road name.
 6. Tap a star to save a stop locally.
 7. Use Favourites to open, delete, or reorder saved stops.
 8. Tap a result from any tab to view live arrivals for that stop.
@@ -45,6 +46,11 @@ The result markers update without moving the camera; only the scope button fits
 the camera to the most recent result region.
 Pure map-region and annotation values keep fitting and marker mapping testable
 without requiring MapKit UI automation.
+
+Nearby cards and Favourite rows use one shared `BusStopArrivalPreviewStore`.
+The store coalesces requests, keeps fresh per-stop results in memory, and refreshes
+visible previews about every 20 seconds. A pure builder selects one next arrival
+per service, sorts services by that timestamp, and keeps the earliest four.
 
 The Search, Nearby, Favourites, and arrival screens share one observable
 favourites ViewModel. Its storage dependency is a protocol, while the app uses a

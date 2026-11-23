@@ -29,8 +29,11 @@ final class NearbyBusStopsViewModelTests: XCTestCase {
             XCTFail("Expected a map region after loading nearby stops")
             return
         }
-        XCTAssertEqual(mapRegion.centerLatitude, 1.296825, accuracy: 0.000_001)
+        XCTAssertEqual(mapRegion.centerLatitude, 1.2968, accuracy: 0.000_001)
         XCTAssertEqual(mapRegion.centerLongitude, 103.853, accuracy: 0.000_001)
+        XCTAssertEqual(mapRegion.latitudeDelta, 0.01, accuracy: 0.000_001)
+        XCTAssertEqual(mapRegion.longitudeDelta, 0.01, accuracy: 0.000_001)
+        XCTAssertEqual(viewModel.homeMapRegion, mapRegion)
         XCTAssertEqual(locationProvider.requestCount, 1)
         let request = await apiClient.lastRequest
         XCTAssertEqual(
@@ -140,7 +143,10 @@ final class NearbyBusStopsViewModelTests: XCTestCase {
             locationProvider: locationProvider
         )
 
+        XCTAssertEqual(viewModel.displayMode, .map)
         await viewModel.load()
+        viewModel.setDisplayMode(.list)
+        XCTAssertEqual(viewModel.displayMode, .list)
         viewModel.setDisplayMode(.map)
         viewModel.selectBusStop(stopCode: expectedStop.stopCode)
 
@@ -200,6 +206,50 @@ final class NearbyBusStopsViewModelTests: XCTestCase {
                 longitude: 103.855,
                 radiusMeters: 750,
                 limit: 5
+            )
+        )
+    }
+
+    func testSearchingUserLocationAreaReloadsStopsAndClearsMovedMapPrompt() async {
+        let initialStop = makeBusStop()
+        let refreshedStop = makeBusStop(
+            code: "01013",
+            description: "St Joseph's Church",
+            latitude: 1.297,
+            longitude: 103.8532
+        )
+        let userLocation = UserLocation(latitude: 1.2968, longitude: 103.853)
+        let locationProvider = UserLocationProviderStub(
+            result: .success(userLocation)
+        )
+        let apiClient = NearbyBusStopAPIClientStub(
+            results: [.success([initialStop]), .success([refreshedStop])]
+        )
+        let viewModel = NearbyBusStopsViewModel(
+            apiClient: apiClient,
+            locationProvider: locationProvider
+        )
+
+        await viewModel.load()
+        viewModel.updateVisibleMapCenter(
+            UserLocation(latitude: 1.2988, longitude: 103.855)
+        )
+        XCTAssertTrue(viewModel.canSearchMapArea)
+
+        await viewModel.searchUserLocationArea()
+
+        XCTAssertEqual(viewModel.busStops, [refreshedStop])
+        XCTAssertEqual(viewModel.lastSearchCenter, userLocation)
+        XCTAssertFalse(viewModel.canSearchMapArea)
+        XCTAssertNil(viewModel.pendingMapCenter)
+        let request = await apiClient.lastRequest
+        XCTAssertEqual(
+            request,
+            .init(
+                latitude: userLocation.latitude,
+                longitude: userLocation.longitude,
+                radiusMeters: 500,
+                limit: 20
             )
         )
     }

@@ -55,6 +55,12 @@
 		10000000000000000000002E /* ArrivalReminderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000031 /* ArrivalReminderViewModel.swift */; };
 		10000000000000000000002F /* ArrivalReminderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000032 /* ArrivalReminderTests.swift */; };
 		100000000000000000000030 /* ArrivalReminderViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000033 /* ArrivalReminderViewModelTests.swift */; };
+		100000000000000000000031 /* BusStopArrivalPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000036 /* BusStopArrivalPreview.swift */; };
+		100000000000000000000032 /* BusStopArrivalPreviewStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000037 /* BusStopArrivalPreviewStore.swift */; };
+		100000000000000000000033 /* BusStopArrivalPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000038 /* BusStopArrivalPreviewView.swift */; };
+		100000000000000000000034 /* NearbyBusStopsPreviewPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000039 /* NearbyBusStopsPreviewPanel.swift */; };
+		100000000000000000000035 /* BusStopArrivalPreviewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000000000000000000003A /* BusStopArrivalPreviewTests.swift */; };
+		100000000000000000000036 /* BusStopArrivalPreviewStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000000000000000000003B /* BusStopArrivalPreviewStoreTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -121,6 +127,12 @@
 		200000000000000000000033 /* ArrivalReminderViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrivalReminderViewModelTests.swift; sourceTree = "<group>"; };
 		200000000000000000000034 /* Backend.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Backend.xcconfig; sourceTree = "<group>"; };
 		200000000000000000000035 /* Secrets.xcconfig.example */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig.example; sourceTree = "<group>"; };
+		200000000000000000000036 /* BusStopArrivalPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusStopArrivalPreview.swift; sourceTree = "<group>"; };
+		200000000000000000000037 /* BusStopArrivalPreviewStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusStopArrivalPreviewStore.swift; sourceTree = "<group>"; };
+		200000000000000000000038 /* BusStopArrivalPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusStopArrivalPreviewView.swift; sourceTree = "<group>"; };
+		200000000000000000000039 /* NearbyBusStopsPreviewPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearbyBusStopsPreviewPanel.swift; sourceTree = "<group>"; };
+		20000000000000000000003A /* BusStopArrivalPreviewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusStopArrivalPreviewTests.swift; sourceTree = "<group>"; };
+		20000000000000000000003B /* BusStopArrivalPreviewStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusStopArrivalPreviewStoreTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -242,6 +254,8 @@
 				20000000000000000000002C /* NearbyMapRegionTests.swift */,
 				200000000000000000000032 /* ArrivalReminderTests.swift */,
 				200000000000000000000033 /* ArrivalReminderViewModelTests.swift */,
+				20000000000000000000003A /* BusStopArrivalPreviewTests.swift */,
+				20000000000000000000003B /* BusStopArrivalPreviewStoreTests.swift */,
 			);
 			path = BusAppTests;
 			sourceTree = "<group>";
@@ -262,6 +276,9 @@
 				200000000000000000000031 /* ArrivalReminderViewModel.swift */,
 				200000000000000000000012 /* BusArrival.swift */,
 				200000000000000000000013 /* ArrivalTimeFormatter.swift */,
+				200000000000000000000036 /* BusStopArrivalPreview.swift */,
+				200000000000000000000037 /* BusStopArrivalPreviewStore.swift */,
+				200000000000000000000038 /* BusStopArrivalPreviewView.swift */,
 				200000000000000000000015 /* BusArrivalView.swift */,
 				200000000000000000000014 /* BusArrivalViewModel.swift */,
 			);
@@ -283,6 +300,7 @@
 				20000000000000000000001E /* DistanceFormatter.swift */,
 				20000000000000000000001D /* NearbyBusStop.swift */,
 				20000000000000000000002B /* NearbyBusStopsMap.swift */,
+				200000000000000000000039 /* NearbyBusStopsPreviewPanel.swift */,
 				200000000000000000000020 /* NearbyBusStopRow.swift */,
 				20000000000000000000002A /* NearbyMapRegion.swift */,
 				200000000000000000000021 /* NearbyBusStopsView.swift */,
@@ -462,6 +480,10 @@
 				10000000000000000000002C /* UserNotificationArrivalReminderScheduler.swift in Sources */,
 				10000000000000000000002D /* ArrivalReminder.swift in Sources */,
 				10000000000000000000002E /* ArrivalReminderViewModel.swift in Sources */,
+				100000000000000000000031 /* BusStopArrivalPreview.swift in Sources */,
+				100000000000000000000032 /* BusStopArrivalPreviewStore.swift in Sources */,
+				100000000000000000000033 /* BusStopArrivalPreviewView.swift in Sources */,
+				100000000000000000000034 /* NearbyBusStopsPreviewPanel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -481,6 +503,8 @@
 				100000000000000000000029 /* NearbyMapRegionTests.swift in Sources */,
 				10000000000000000000002F /* ArrivalReminderTests.swift in Sources */,
 				100000000000000000000030 /* ArrivalReminderViewModelTests.swift in Sources */,
+				100000000000000000000035 /* BusStopArrivalPreviewTests.swift in Sources */,
+				100000000000000000000036 /* BusStopArrivalPreviewStoreTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
