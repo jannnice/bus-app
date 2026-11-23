@@ -207,6 +207,28 @@ final class NearbyBusStopsViewModelTests: XCTestCase {
         )
     }
 
+    func testClearingPendingMapSearchRemovesSearchThisAreaPrompt() async {
+        let locationProvider = UserLocationProviderStub(
+            result: .success(UserLocation(latitude: 1.2968, longitude: 103.853))
+        )
+        let apiClient = NearbyBusStopAPIClientStub(result: .success([makeBusStop()]))
+        let viewModel = NearbyBusStopsViewModel(
+            apiClient: apiClient,
+            locationProvider: locationProvider
+        )
+
+        await viewModel.load()
+        viewModel.updateVisibleMapCenter(
+            UserLocation(latitude: 1.2988, longitude: 103.855)
+        )
+        XCTAssertTrue(viewModel.canSearchMapArea)
+
+        viewModel.clearPendingMapSearch()
+
+        XCTAssertFalse(viewModel.canSearchMapArea)
+        XCTAssertNil(viewModel.pendingMapCenter)
+    }
+
     func testFailedMapAreaSearchPreservesExistingStopsAndCanRetry() async {
         let initialStop = makeBusStop()
         let locationProvider = UserLocationProviderStub(

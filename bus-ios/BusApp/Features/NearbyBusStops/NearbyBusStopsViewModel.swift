@@ -95,6 +95,10 @@ final class NearbyBusStopsViewModel {
         pendingMapCenter = center
     }
 
+    func clearPendingMapSearch() {
+        pendingMapCenter = nil
+    }
+
     func searchPendingMapArea() async {
         guard state == .loaded,
               let searchCenter = pendingMapCenter,

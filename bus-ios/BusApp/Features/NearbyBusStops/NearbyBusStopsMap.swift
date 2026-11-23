@@ -13,6 +13,7 @@ struct NearbyBusStopsMap: View {
     let isSearchingMapArea: Bool
     let onSelect: (String?) -> Void
     let onVisibleCenterChange: (UserLocation) -> Void
+    let onRecenterToUserLocation: () -> Void
     let onSearchMapArea: () async -> Void
 
     @State private var cameraPosition: MapCameraPosition
@@ -29,6 +30,7 @@ struct NearbyBusStopsMap: View {
         isSearchingMapArea: Bool,
         onSelect: @escaping (String?) -> Void,
         onVisibleCenterChange: @escaping (UserLocation) -> Void,
+        onRecenterToUserLocation: @escaping () -> Void,
         onSearchMapArea: @escaping () async -> Void
     ) {
         self.busStops = busStops
@@ -42,6 +44,7 @@ struct NearbyBusStopsMap: View {
         self.isSearchingMapArea = isSearchingMapArea
         self.onSelect = onSelect
         self.onVisibleCenterChange = onVisibleCenterChange
+        self.onRecenterToUserLocation = onRecenterToUserLocation
         self.onSearchMapArea = onSearchMapArea
         _cameraPosition = State(initialValue: .region(region.coordinateRegion))
     }
@@ -67,7 +70,13 @@ struct NearbyBusStopsMap: View {
         }
         .overlay(alignment: .topTrailing) {
             Button {
-                cameraPosition = .region(region.coordinateRegion)
+                onRecenterToUserLocation()
+                withAnimation {
+                    cameraPosition = .userLocation(
+                        followsHeading: false,
+                        fallback: .region(region.coordinateRegion)
+                    )
+                }
             } label: {
                 Image(systemName: "scope")
                     .font(.headline)
@@ -76,7 +85,8 @@ struct NearbyBusStopsMap: View {
             }
             .buttonStyle(.plain)
             .padding()
-            .accessibilityLabel("Show all nearby stops")
+            .accessibilityLabel("Go to my location")
+            .accessibilityHint("Centers the map on your current location")
         }
         .overlay(alignment: .top) {
             searchMapAreaControl

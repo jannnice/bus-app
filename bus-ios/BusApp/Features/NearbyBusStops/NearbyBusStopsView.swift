@@ -155,6 +155,7 @@ struct NearbyBusStopsView: View {
                         isSearchingMapArea: viewModel.isSearchingMapArea,
                         onSelect: viewModel.selectBusStop,
                         onVisibleCenterChange: viewModel.updateVisibleMapCenter,
+                        onRecenterToUserLocation: viewModel.clearPendingMapSearch,
                         onSearchMapArea: viewModel.searchPendingMapArea
                     )
                 }
