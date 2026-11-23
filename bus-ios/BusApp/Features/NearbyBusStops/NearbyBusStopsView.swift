@@ -142,10 +142,12 @@ struct NearbyBusStopsView: View {
                 nearbyStopsList
 
             case .map:
-                if let mapRegion = viewModel.mapRegion {
+                if let mapRegion = viewModel.mapRegion,
+                   let homeMapRegion = viewModel.homeMapRegion {
                     NearbyBusStopsMap(
                         busStops: viewModel.busStops,
                         region: mapRegion,
+                        homeRegion: homeMapRegion,
                         selectedBusStop: viewModel.selectedBusStop,
                         arrivalAPIClient: arrivalAPIClient,
                         favoriteBusStopsViewModel: favoriteBusStopsViewModel,

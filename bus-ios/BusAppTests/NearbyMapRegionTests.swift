@@ -15,6 +15,17 @@ final class NearbyMapRegionTests: XCTestCase {
         XCTAssertTrue(annotation.isFavorite)
     }
 
+    func testCenteredRegionUsesLocationAndFixedNearbySpan() {
+        let region = NearbyMapRegion.centered(
+            on: UserLocation(latitude: 1.2968, longitude: 103.853)
+        )
+
+        XCTAssertEqual(region.centerLatitude, 1.2968, accuracy: 0.000_001)
+        XCTAssertEqual(region.centerLongitude, 103.853, accuracy: 0.000_001)
+        XCTAssertEqual(region.latitudeDelta, 0.01, accuracy: 0.000_001)
+        XCTAssertEqual(region.longitudeDelta, 0.01, accuracy: 0.000_001)
+    }
+
     func testFittingRegionContainsUserAndEveryBusStopWithPadding() {
         let userLocation = UserLocation(latitude: 1.0, longitude: 103.0)
         let busStops = [

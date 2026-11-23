@@ -65,6 +65,13 @@ final class NearbyBusStopsViewModel {
         pendingMapCenter != nil && !isSearchingMapArea
     }
 
+    var homeMapRegion: NearbyMapRegion? {
+        guard let userLocation else {
+            return nil
+        }
+        return .centered(on: userLocation)
+    }
+
     func setDisplayMode(_ displayMode: NearbyBusStopsDisplayMode) {
         self.displayMode = displayMode
     }
@@ -128,10 +135,7 @@ final class NearbyBusStopsViewModel {
             if pendingMapCenter == searchCenter {
                 pendingMapCenter = nil
             }
-            mapRegion = NearbyMapRegion.fitting(
-                userLocation: searchCenter,
-                busStops: results
-            )
+            mapRegion = .centered(on: searchCenter)
             if let selectedStopCode,
                !results.contains(where: { $0.stopCode == selectedStopCode }) {
                 self.selectedStopCode = nil
@@ -178,10 +182,7 @@ final class NearbyBusStopsViewModel {
             lastSearchCenter = location
             pendingMapCenter = nil
             mapSearchMessage = nil
-            mapRegion = NearbyMapRegion.fitting(
-                userLocation: location,
-                busStops: results
-            )
+            mapRegion = .centered(on: location)
             if let selectedStopCode,
                !results.contains(where: { $0.stopCode == selectedStopCode }) {
                 self.selectedStopCode = nil

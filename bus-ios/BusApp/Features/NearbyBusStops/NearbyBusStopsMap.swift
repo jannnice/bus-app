@@ -4,6 +4,7 @@ import SwiftUI
 struct NearbyBusStopsMap: View {
     let busStops: [NearbyBusStop]
     let region: NearbyMapRegion
+    let homeRegion: NearbyMapRegion
     let selectedBusStop: NearbyBusStop?
     let arrivalAPIClient: any BusArrivalAPIClient
     let favoriteBusStopsViewModel: FavoriteBusStopsViewModel
@@ -21,6 +22,7 @@ struct NearbyBusStopsMap: View {
     init(
         busStops: [NearbyBusStop],
         region: NearbyMapRegion,
+        homeRegion: NearbyMapRegion,
         selectedBusStop: NearbyBusStop?,
         arrivalAPIClient: any BusArrivalAPIClient,
         favoriteBusStopsViewModel: FavoriteBusStopsViewModel,
@@ -35,6 +37,7 @@ struct NearbyBusStopsMap: View {
     ) {
         self.busStops = busStops
         self.region = region
+        self.homeRegion = homeRegion
         self.selectedBusStop = selectedBusStop
         self.arrivalAPIClient = arrivalAPIClient
         self.favoriteBusStopsViewModel = favoriteBusStopsViewModel
@@ -71,11 +74,8 @@ struct NearbyBusStopsMap: View {
         .overlay(alignment: .topTrailing) {
             Button {
                 onRecenterToUserLocation()
-                withAnimation {
-                    cameraPosition = .userLocation(
-                        followsHeading: false,
-                        fallback: .region(region.coordinateRegion)
-                    )
+                withAnimation(.easeInOut(duration: 0.35)) {
+                    cameraPosition = .region(homeRegion.coordinateRegion)
                 }
             } label: {
                 Image(systemName: "scope")

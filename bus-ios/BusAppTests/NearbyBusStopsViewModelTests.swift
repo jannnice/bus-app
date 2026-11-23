@@ -29,8 +29,11 @@ final class NearbyBusStopsViewModelTests: XCTestCase {
             XCTFail("Expected a map region after loading nearby stops")
             return
         }
-        XCTAssertEqual(mapRegion.centerLatitude, 1.296825, accuracy: 0.000_001)
+        XCTAssertEqual(mapRegion.centerLatitude, 1.2968, accuracy: 0.000_001)
         XCTAssertEqual(mapRegion.centerLongitude, 103.853, accuracy: 0.000_001)
+        XCTAssertEqual(mapRegion.latitudeDelta, 0.01, accuracy: 0.000_001)
+        XCTAssertEqual(mapRegion.longitudeDelta, 0.01, accuracy: 0.000_001)
+        XCTAssertEqual(viewModel.homeMapRegion, mapRegion)
         XCTAssertEqual(locationProvider.requestCount, 1)
         let request = await apiClient.lastRequest
         XCTAssertEqual(
