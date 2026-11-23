@@ -25,7 +25,7 @@ struct NearbyBusStopsPreviewPanel: View {
             ScrollViewReader { proxy in
                 ScrollView(.horizontal) {
                     LazyHStack(spacing: 12) {
-                        ForEach(busStops) { nearbyBusStop in
+                        ForEach(orderedBusStops) { nearbyBusStop in
                             stopCard(for: nearbyBusStop)
                                 .id(nearbyBusStop.stopCode)
                         }
@@ -50,6 +50,15 @@ struct NearbyBusStopsPreviewPanel: View {
         .padding(.bottom, 8)
         .fixedSize(horizontal: false, vertical: true)
         .background(.ultraThinMaterial)
+    }
+
+    private var orderedBusStops: [NearbyBusStop] {
+        NearbyBusStopCarouselOrdering.favoritesFirst(
+            busStops,
+            favoriteStopCodes: Set(
+                favoriteBusStopsViewModel.busStops.map(\.stopCode)
+            )
+        )
     }
 
     private func stopCard(for nearbyBusStop: NearbyBusStop) -> some View {
