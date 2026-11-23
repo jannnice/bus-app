@@ -210,11 +210,21 @@ final class NearbyBusStopsViewModelTests: XCTestCase {
         )
     }
 
-    func testClearingPendingMapSearchRemovesSearchThisAreaPrompt() async {
-        let locationProvider = UserLocationProviderStub(
-            result: .success(UserLocation(latitude: 1.2968, longitude: 103.853))
+    func testSearchingUserLocationAreaReloadsStopsAndClearsMovedMapPrompt() async {
+        let initialStop = makeBusStop()
+        let refreshedStop = makeBusStop(
+            code: "01013",
+            description: "St Joseph's Church",
+            latitude: 1.297,
+            longitude: 103.8532
         )
-        let apiClient = NearbyBusStopAPIClientStub(result: .success([makeBusStop()]))
+        let userLocation = UserLocation(latitude: 1.2968, longitude: 103.853)
+        let locationProvider = UserLocationProviderStub(
+            result: .success(userLocation)
+        )
+        let apiClient = NearbyBusStopAPIClientStub(
+            results: [.success([initialStop]), .success([refreshedStop])]
+        )
         let viewModel = NearbyBusStopsViewModel(
             apiClient: apiClient,
             locationProvider: locationProvider
@@ -226,10 +236,22 @@ final class NearbyBusStopsViewModelTests: XCTestCase {
         )
         XCTAssertTrue(viewModel.canSearchMapArea)
 
-        viewModel.clearPendingMapSearch()
+        await viewModel.searchUserLocationArea()
 
+        XCTAssertEqual(viewModel.busStops, [refreshedStop])
+        XCTAssertEqual(viewModel.lastSearchCenter, userLocation)
         XCTAssertFalse(viewModel.canSearchMapArea)
         XCTAssertNil(viewModel.pendingMapCenter)
+        let request = await apiClient.lastRequest
+        XCTAssertEqual(
+            request,
+            .init(
+                latitude: userLocation.latitude,
+                longitude: userLocation.longitude,
+                radiusMeters: 500,
+                limit: 20
+            )
+        )
     }
 
     func testFailedMapAreaSearchPreservesExistingStopsAndCanRetry() async {

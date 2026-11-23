@@ -14,7 +14,7 @@ struct NearbyBusStopsMap: View {
     let isSearchingMapArea: Bool
     let onSelect: (String?) -> Void
     let onVisibleCenterChange: (UserLocation) -> Void
-    let onRecenterToUserLocation: () -> Void
+    let onRecenterToUserLocation: () async -> Void
     let onSearchMapArea: () async -> Void
 
     @State private var cameraPosition: MapCameraPosition
@@ -32,7 +32,7 @@ struct NearbyBusStopsMap: View {
         isSearchingMapArea: Bool,
         onSelect: @escaping (String?) -> Void,
         onVisibleCenterChange: @escaping (UserLocation) -> Void,
-        onRecenterToUserLocation: @escaping () -> Void,
+        onRecenterToUserLocation: @escaping () async -> Void,
         onSearchMapArea: @escaping () async -> Void
     ) {
         self.busStops = busStops
@@ -73,9 +73,11 @@ struct NearbyBusStopsMap: View {
         }
         .overlay(alignment: .topTrailing) {
             Button {
-                onRecenterToUserLocation()
                 withAnimation(.easeInOut(duration: 0.35)) {
                     cameraPosition = .region(homeRegion.coordinateRegion)
+                }
+                Task {
+                    await onRecenterToUserLocation()
                 }
             } label: {
                 Image(systemName: "scope")
@@ -85,8 +87,9 @@ struct NearbyBusStopsMap: View {
             }
             .buttonStyle(.plain)
             .padding()
+            .disabled(isSearchingMapArea)
             .accessibilityLabel("Go to my location")
-            .accessibilityHint("Centers the map on your current location")
+            .accessibilityHint("Centers the map and reloads nearby bus stops")
         }
         .overlay(alignment: .top) {
             searchMapAreaControl

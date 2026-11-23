@@ -102,14 +102,23 @@ final class NearbyBusStopsViewModel {
         pendingMapCenter = center
     }
 
-    func clearPendingMapSearch() {
+    func searchUserLocationArea() async {
+        guard let userLocation else {
+            return
+        }
         pendingMapCenter = nil
+        await searchMapArea(at: userLocation)
     }
 
     func searchPendingMapArea() async {
-        guard state == .loaded,
-              let searchCenter = pendingMapCenter,
-              !isRequestInFlight else {
+        guard let searchCenter = pendingMapCenter else {
+            return
+        }
+        await searchMapArea(at: searchCenter)
+    }
+
+    private func searchMapArea(at searchCenter: UserLocation) async {
+        guard state == .loaded, !isRequestInFlight else {
             return
         }
 
