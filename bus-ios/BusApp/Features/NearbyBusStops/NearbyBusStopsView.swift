@@ -33,6 +33,7 @@ struct NearbyBusStopsView: View {
         NavigationStack {
             content
                 .navigationTitle("Nearby Stops")
+                .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     if viewModel.state == .loaded,
                        viewModel.displayMode == .map {

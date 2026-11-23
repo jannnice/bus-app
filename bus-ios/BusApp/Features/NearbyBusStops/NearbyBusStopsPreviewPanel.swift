@@ -33,6 +33,7 @@ struct NearbyBusStopsPreviewPanel: View {
                     .scrollTargetLayout()
                     .padding(.horizontal)
                 }
+                .frame(height: 132)
                 .scrollIndicators(.hidden)
                 .scrollTargetBehavior(.viewAligned)
                 .onChange(of: selectedStopCode) { _, stopCode in
@@ -47,6 +48,7 @@ struct NearbyBusStopsPreviewPanel: View {
         }
         .padding(.top, 10)
         .padding(.bottom, 8)
+        .fixedSize(horizontal: false, vertical: true)
         .background(.ultraThinMaterial)
     }
 
