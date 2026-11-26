@@ -61,6 +61,29 @@
 		100000000000000000000034 /* NearbyBusStopsPreviewPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000039 /* NearbyBusStopsPreviewPanel.swift */; };
 		100000000000000000000035 /* BusStopArrivalPreviewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000000000000000000003A /* BusStopArrivalPreviewTests.swift */; };
 		100000000000000000000036 /* BusStopArrivalPreviewStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000000000000000000003B /* BusStopArrivalPreviewStoreTests.swift */; };
+		B00000000000000000000011 /* BusWidgetData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00000000000000000000001 /* BusWidgetData.swift */; };
+		B00000000000000000000012 /* BusWidgetLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00000000000000000000002 /* BusWidgetLink.swift */; };
+		B00000000000000000000013 /* FavoriteStopWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00000000000000000000003 /* FavoriteStopWidget.swift */; };
+		B00000000000000000000014 /* FavoriteStopWidgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00000000000000000000004 /* FavoriteStopWidgetView.swift */; };
+		B00000000000000000000015 /* FavoriteStopWidgetIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00000000000000000000005 /* FavoriteStopWidgetIntents.swift */; };
+		B00000000000000000000016 /* WidgetArrivalLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00000000000000000000006 /* WidgetArrivalLoader.swift */; };
+		B00000000000000000000021 /* BusWidgetData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00000000000000000000001 /* BusWidgetData.swift */; };
+		B00000000000000000000022 /* BusWidgetLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00000000000000000000002 /* BusWidgetLink.swift */; };
+		B00000000000000000000025 /* FavoriteStopWidgetIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00000000000000000000005 /* FavoriteStopWidgetIntents.swift */; };
+		B00000000000000000000026 /* WidgetArrivalLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00000000000000000000006 /* WidgetArrivalLoader.swift */; };
+		B00000000000000000000070 /* AppConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000002 /* AppConfiguration.swift */; };
+		B00000000000000000000071 /* APIErrorResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000003 /* APIErrorResponse.swift */; };
+		B00000000000000000000072 /* BackendAPIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000004 /* BackendAPIClient.swift */; };
+		B00000000000000000000073 /* BackendAPIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000005 /* BackendAPIError.swift */; };
+		B00000000000000000000074 /* BusStopAPIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000006 /* BusStopAPIClient.swift */; };
+		B00000000000000000000075 /* BusStop.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000007 /* BusStop.swift */; };
+		B00000000000000000000076 /* BusArrivalAPIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000011 /* BusArrivalAPIClient.swift */; };
+		B00000000000000000000077 /* BusArrival.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000012 /* BusArrival.swift */; };
+		B00000000000000000000078 /* NearbyBusStopAPIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000000000000000000001A /* NearbyBusStopAPIClient.swift */; };
+		B00000000000000000000079 /* NearbyBusStop.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000000000000000000001D /* NearbyBusStop.swift */; };
+		B00000000000000000000080 /* BusStopArrivalPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000036 /* BusStopArrivalPreview.swift */; };
+		B00000000000000000000042 /* BusWidget.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B00000000000000000000040 /* BusWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		B00000000000000000000030 /* BusWidgetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00000000000000000000010 /* BusWidgetTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -71,7 +94,26 @@
 			remoteGlobalIDString = 500000000000000000000001;
 			remoteInfo = BusApp;
 		};
+		B00000000000000000000059 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 400000000000000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B00000000000000000000050;
+			remoteInfo = BusWidget;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		B00000000000000000000043 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (B00000000000000000000042 /* BusWidget.appex in Embed App Extensions */, );
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		200000000000000000000001 /* BusApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusApp.swift; sourceTree = "<group>"; };
@@ -133,6 +175,17 @@
 		200000000000000000000039 /* NearbyBusStopsPreviewPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearbyBusStopsPreviewPanel.swift; sourceTree = "<group>"; };
 		20000000000000000000003A /* BusStopArrivalPreviewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusStopArrivalPreviewTests.swift; sourceTree = "<group>"; };
 		20000000000000000000003B /* BusStopArrivalPreviewStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusStopArrivalPreviewStoreTests.swift; sourceTree = "<group>"; };
+		B00000000000000000000001 /* BusWidgetData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusWidgetData.swift; sourceTree = "<group>"; };
+		B00000000000000000000002 /* BusWidgetLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusWidgetLink.swift; sourceTree = "<group>"; };
+		B00000000000000000000003 /* FavoriteStopWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteStopWidget.swift; sourceTree = "<group>"; };
+		B00000000000000000000004 /* FavoriteStopWidgetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteStopWidgetView.swift; sourceTree = "<group>"; };
+		B00000000000000000000005 /* FavoriteStopWidgetIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteStopWidgetIntents.swift; sourceTree = "<group>"; };
+		B00000000000000000000006 /* WidgetArrivalLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetArrivalLoader.swift; sourceTree = "<group>"; };
+		B00000000000000000000007 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B00000000000000000000008 /* BusWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BusWidget.entitlements; sourceTree = "<group>"; };
+		B00000000000000000000009 /* BusApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BusApp.entitlements; sourceTree = "<group>"; };
+		B00000000000000000000010 /* BusWidgetTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusWidgetTests.swift; sourceTree = "<group>"; };
+		B00000000000000000000040 /* BusWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = BusWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -150,6 +203,12 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B00000000000000000000051 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = ();
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -158,6 +217,7 @@
 			children = (
 				700000000000000000000011 /* Config */,
 				700000000000000000000002 /* BusApp */,
+				B00000000000000000000041 /* BusWidget */,
 				700000000000000000000009 /* BusAppTests */,
 				70000000000000000000000A /* Products */,
 			);
@@ -181,6 +241,7 @@
 				20000000000000000000002D /* AppNotificationDelegate.swift */,
 				200000000000000000000001 /* BusApp.swift */,
 				200000000000000000000019 /* BusAppRootView.swift */,
+				B00000000000000000000002 /* BusWidgetLink.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -235,6 +296,7 @@
 			isa = PBXGroup;
 			children = (
 				20000000000000000000000E /* Info.plist */,
+				B00000000000000000000009 /* BusApp.entitlements */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -256,6 +318,7 @@
 				200000000000000000000033 /* ArrivalReminderViewModelTests.swift */,
 				20000000000000000000003A /* BusStopArrivalPreviewTests.swift */,
 				20000000000000000000003B /* BusStopArrivalPreviewStoreTests.swift */,
+				B00000000000000000000010 /* BusWidgetTests.swift */,
 			);
 			path = BusAppTests;
 			sourceTree = "<group>";
@@ -265,6 +328,7 @@
 			children = (
 				20000000000000000000000F /* BusApp.app */,
 				200000000000000000000010 /* BusAppTests.xctest */,
+				B00000000000000000000040 /* BusWidget.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -313,6 +377,7 @@
 			isa = PBXGroup;
 			children = (
 				200000000000000000000024 /* FavoriteBusStopStorage.swift */,
+				B00000000000000000000001 /* BusWidgetData.swift */,
 				200000000000000000000025 /* UserDefaultsFavoriteBusStopStorage.swift */,
 			);
 			path = Persistence;
@@ -346,6 +411,19 @@
 			path = Config;
 			sourceTree = "<group>";
 		};
+		B00000000000000000000041 /* BusWidget */ = {
+			isa = PBXGroup;
+			children = (
+				B00000000000000000000003 /* FavoriteStopWidget.swift */,
+				B00000000000000000000004 /* FavoriteStopWidgetView.swift */,
+				B00000000000000000000005 /* FavoriteStopWidgetIntents.swift */,
+				B00000000000000000000006 /* WidgetArrivalLoader.swift */,
+				B00000000000000000000007 /* Info.plist */,
+				B00000000000000000000008 /* BusWidget.entitlements */,
+			);
+			path = BusWidget;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -356,10 +434,12 @@
 				600000000000000000000003 /* Sources */,
 				600000000000000000000001 /* Frameworks */,
 				600000000000000000000005 /* Resources */,
+				B00000000000000000000043 /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				B00000000000000000000058 /* PBXTargetDependency */,
 			);
 			name = BusApp;
 			productName = BusApp;
@@ -384,6 +464,21 @@
 			productReference = 200000000000000000000010 /* BusAppTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		B00000000000000000000050 /* BusWidget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B00000000000000000000056 /* Build configuration list for PBXNativeTarget BusWidget */;
+			buildPhases = (
+				B00000000000000000000053 /* Sources */,
+				B00000000000000000000051 /* Frameworks */,
+				B00000000000000000000052 /* Resources */,
+			);
+			buildRules = ();
+			dependencies = ();
+			name = BusWidget;
+			productName = BusWidget;
+			productReference = B00000000000000000000040 /* BusWidget.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -396,10 +491,15 @@
 				TargetAttributes = {
 					500000000000000000000001 = {
 						CreatedOnToolsVersion = 27.2;
+						SystemCapabilities = { com.apple.ApplicationGroups.iOS = { enabled = 1; }; };
 					};
 					500000000000000000000002 = {
 						CreatedOnToolsVersion = 27.2;
 						TestTargetID = 500000000000000000000001;
+					};
+					B00000000000000000000050 = {
+						CreatedOnToolsVersion = 27.2;
+						SystemCapabilities = { com.apple.ApplicationGroups.iOS = { enabled = 1; }; };
 					};
 				};
 			};
@@ -418,6 +518,7 @@
 			targets = (
 				500000000000000000000001 /* BusApp */,
 				500000000000000000000002 /* BusAppTests */,
+				B00000000000000000000050 /* BusWidget */,
 			);
 		};
 /* End PBXProject section */
@@ -435,6 +536,12 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B00000000000000000000052 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = ();
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
@@ -484,6 +591,10 @@
 				100000000000000000000032 /* BusStopArrivalPreviewStore.swift in Sources */,
 				100000000000000000000033 /* BusStopArrivalPreviewView.swift in Sources */,
 				100000000000000000000034 /* NearbyBusStopsPreviewPanel.swift in Sources */,
+				B00000000000000000000021 /* BusWidgetData.swift in Sources */,
+				B00000000000000000000022 /* BusWidgetLink.swift in Sources */,
+				B00000000000000000000025 /* FavoriteStopWidgetIntents.swift in Sources */,
+				B00000000000000000000026 /* WidgetArrivalLoader.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -505,6 +616,31 @@
 				100000000000000000000030 /* ArrivalReminderViewModelTests.swift in Sources */,
 				100000000000000000000035 /* BusStopArrivalPreviewTests.swift in Sources */,
 				100000000000000000000036 /* BusStopArrivalPreviewStoreTests.swift in Sources */,
+				B00000000000000000000030 /* BusWidgetTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B00000000000000000000053 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B00000000000000000000011 /* BusWidgetData.swift in Sources */,
+				B00000000000000000000012 /* BusWidgetLink.swift in Sources */,
+				B00000000000000000000013 /* FavoriteStopWidget.swift in Sources */,
+				B00000000000000000000014 /* FavoriteStopWidgetView.swift in Sources */,
+				B00000000000000000000015 /* FavoriteStopWidgetIntents.swift in Sources */,
+				B00000000000000000000016 /* WidgetArrivalLoader.swift in Sources */,
+				B00000000000000000000070 /* AppConfiguration.swift in Sources */,
+				B00000000000000000000071 /* APIErrorResponse.swift in Sources */,
+				B00000000000000000000072 /* BackendAPIClient.swift in Sources */,
+				B00000000000000000000073 /* BackendAPIError.swift in Sources */,
+				B00000000000000000000074 /* BusStopAPIClient.swift in Sources */,
+				B00000000000000000000075 /* BusStop.swift in Sources */,
+				B00000000000000000000076 /* BusArrivalAPIClient.swift in Sources */,
+				B00000000000000000000077 /* BusArrival.swift in Sources */,
+				B00000000000000000000078 /* NearbyBusStopAPIClient.swift in Sources */,
+				B00000000000000000000079 /* NearbyBusStop.swift in Sources */,
+				B00000000000000000000080 /* BusStopArrivalPreview.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -516,12 +652,18 @@
 			target = 500000000000000000000001 /* BusApp */;
 			targetProxy = 300000000000000000000001 /* PBXContainerItemProxy */;
 		};
+		B00000000000000000000058 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B00000000000000000000050 /* BusWidget */;
+			targetProxy = B00000000000000000000059 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		A00000000000000000000001 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				BACKEND_BASE_URL = "http://$(LOCAL_BACKEND_HOST):$(LOCAL_BACKEND_PORT)";
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -540,6 +682,7 @@
 		A00000000000000000000002 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				BACKEND_BASE_URL = "https://bus-backend-ykuw.onrender.com";
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -556,7 +699,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 200000000000000000000034 /* Backend.xcconfig */;
 			buildSettings = {
-				BACKEND_BASE_URL = "http://$(LOCAL_BACKEND_HOST):$(LOCAL_BACKEND_PORT)";
+				CODE_SIGN_ENTITLEMENTS = BusApp/Resources/BusApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
@@ -577,7 +720,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 200000000000000000000034 /* Backend.xcconfig */;
 			buildSettings = {
-				BACKEND_BASE_URL = "https://bus-backend-ykuw.onrender.com";
+				CODE_SIGN_ENTITLEMENTS = BusApp/Resources/BusApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
@@ -626,6 +769,48 @@
 			};
 			name = Release;
 		};
+		B00000000000000000000054 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 200000000000000000000034 /* Backend.xcconfig */;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = BusWidget/BusWidget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = BusWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks", "@executable_path/../../Frameworks");
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jannicesuciptono.BusApp.BusWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		B00000000000000000000055 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 200000000000000000000034 /* Backend.xcconfig */;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = BusWidget/BusWidget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = BusWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks", "@executable_path/../../Frameworks");
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jannicesuciptono.BusApp.BusWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -653,6 +838,12 @@
 				A00000000000000000000005 /* Debug */,
 				A00000000000000000000006 /* Release */,
 			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B00000000000000000000056 /* Build configuration list for PBXNativeTarget BusWidget */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (B00000000000000000000054 /* Debug */, B00000000000000000000055 /* Release */, );
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};

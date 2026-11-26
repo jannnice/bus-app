@@ -1,9 +1,16 @@
 import SwiftUI
+import WidgetKit
 
 struct BusAppRootView: View {
+    private enum Tab { case nearby, search, favorites }
+
+    @Environment(\.scenePhase) private var scenePhase
     let apiClient: BackendAPIClient
     let favoriteBusStopsViewModel: FavoriteBusStopsViewModel
     @State private var arrivalPreviewStore: BusStopArrivalPreviewStore
+    @State private var selectedTab: Tab = .nearby
+    @State private var favoritePath: [BusStop] = []
+    @State private var lastWidgetReload = Date()
 
     init(
         apiClient: BackendAPIClient,
@@ -17,7 +24,7 @@ struct BusAppRootView: View {
     }
 
     var body: some View {
-        TabView {
+        TabView(selection: $selectedTab) {
             NearbyBusStopsView(
                 apiClient: apiClient,
                 locationProvider: CoreLocationProvider(),
@@ -27,6 +34,7 @@ struct BusAppRootView: View {
             .tabItem {
                 Label("Nearby", systemImage: "location")
             }
+            .tag(Tab.nearby)
 
             BusStopSearchView(
                 apiClient: apiClient,
@@ -35,15 +43,22 @@ struct BusAppRootView: View {
                 .tabItem {
                     Label("Search", systemImage: "magnifyingglass")
                 }
+                .tag(Tab.search)
 
             FavoriteBusStopsView(
                 apiClient: apiClient,
                 viewModel: favoriteBusStopsViewModel,
-                arrivalPreviewStore: arrivalPreviewStore
+                arrivalPreviewStore: arrivalPreviewStore,
+                path: $favoritePath
             )
             .tabItem {
                 Label("Favourites", systemImage: "star")
             }
+            .tag(Tab.favorites)
+        }
+        .onOpenURL(perform: openWidgetLink)
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .background { reloadWidgetIfArrivalsChanged() }
         }
         .alert(
             "Favourites Unavailable",
@@ -55,6 +70,28 @@ struct BusAppRootView: View {
         } message: {
             Text(favoriteErrorMessage)
         }
+    }
+
+    private func openWidgetLink(_ url: URL) {
+        guard let route = BusWidgetLink(url: url) else { return }
+        switch route {
+        case .favorites:
+            favoritePath = []
+        case .arrivals(let code):
+            let stop = favoriteBusStopsViewModel.busStops.first { $0.stopCode == code }
+            favoritePath = stop.map { [$0] } ?? []
+        }
+        selectedTab = .favorites
+    }
+
+    private func reloadWidgetIfArrivalsChanged() {
+        guard let data = BusWidgetData.open(), favoriteBusStopsViewModel.busStops.contains(where: {
+            guard let snapshot = data.appSnapshot(for: $0.stopCode) else { return false }
+            return snapshot.fetchedAt > lastWidgetReload && !snapshot.isExpired(at: .now)
+        }) else { return }
+
+        lastWidgetReload = .now
+        WidgetCenter.shared.reloadTimelines(ofKind: BusWidgetData.widgetKind)
     }
 
     private var favoriteErrorIsPresented: Binding<Bool> {

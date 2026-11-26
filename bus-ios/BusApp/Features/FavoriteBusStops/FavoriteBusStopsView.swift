@@ -4,20 +4,23 @@ struct FavoriteBusStopsView: View {
     let apiClient: any BusArrivalAPIClient
     let viewModel: FavoriteBusStopsViewModel
     let arrivalPreviewStore: BusStopArrivalPreviewStore
+    @Binding private var path: [BusStop]
 
     init(
         apiClient: any BusArrivalAPIClient,
         viewModel: FavoriteBusStopsViewModel,
-        arrivalPreviewStore: BusStopArrivalPreviewStore? = nil
+        arrivalPreviewStore: BusStopArrivalPreviewStore? = nil,
+        path: Binding<[BusStop]>
     ) {
         self.apiClient = apiClient
         self.viewModel = viewModel
         self.arrivalPreviewStore = arrivalPreviewStore
             ?? BusStopArrivalPreviewStore(apiClient: apiClient)
+        _path = path
     }
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $path) {
             Group {
                 if viewModel.busStops.isEmpty {
                     ContentUnavailableView {
@@ -28,13 +31,7 @@ struct FavoriteBusStopsView: View {
                 } else {
                     List {
                         ForEach(viewModel.busStops) { busStop in
-                            NavigationLink {
-                                BusArrivalView(
-                                    busStop: busStop,
-                                    apiClient: apiClient,
-                                    favoriteBusStopsViewModel: viewModel
-                                )
-                            } label: {
+                            NavigationLink(value: busStop) {
                                 VStack(alignment: .leading, spacing: 10) {
                                     BusStopRow(busStop: busStop)
 
@@ -51,6 +48,9 @@ struct FavoriteBusStopsView: View {
                     }
                     .listStyle(.plain)
                 }
+            }
+            .navigationDestination(for: BusStop.self) { stop in
+                BusArrivalView(busStop: stop, apiClient: apiClient, favoriteBusStopsViewModel: viewModel)
             }
             .navigationTitle("Favourites")
             .toolbar {
@@ -75,7 +75,8 @@ struct FavoriteBusStopsView: View {
                     longitude: 103.853
                 )
             ]
-        )
+        ),
+        path: .constant([])
     )
 }
 

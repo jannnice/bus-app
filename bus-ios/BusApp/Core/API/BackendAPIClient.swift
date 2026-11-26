@@ -5,15 +5,18 @@ struct BackendAPIClient: BusStopAPIClient, BusArrivalAPIClient, NearbyBusStopAPI
     private let apiToken: String?
     private let session: URLSession
     private let decoder: JSONDecoder
+    private let onArrivalResponse: (@MainActor @Sendable (BusArrivalResponse, Date) -> Void)?
 
     init(
         baseURL: URL,
         apiToken: String? = nil,
-        session: URLSession = .shared
+        session: URLSession = .shared,
+        onArrivalResponse: (@MainActor @Sendable (BusArrivalResponse, Date) -> Void)? = nil
     ) {
         self.baseURL = baseURL
         self.apiToken = apiToken?.trimmingCharacters(in: .whitespacesAndNewlines)
         self.session = session
+        self.onArrivalResponse = onArrivalResponse
 
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
@@ -50,10 +53,15 @@ struct BackendAPIClient: BusStopAPIClient, BusArrivalAPIClient, NearbyBusStopAPI
         let url = baseURL
             .appending(path: "api/v1/arrivals")
             .appending(path: stopCode)
+        let requestedAt = Date()
         let data = try await responseData(from: url)
 
         do {
-            return try decoder.decode(BusArrivalResponse.self, from: data)
+            let response = try decoder.decode(BusArrivalResponse.self, from: data)
+            if response.stopCode == stopCode, !Task.isCancelled {
+                await onArrivalResponse?(response, requestedAt)
+            }
+            return response
         } catch {
             throw BackendAPIError.decodingFailed
         }

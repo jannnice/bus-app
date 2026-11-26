@@ -20,6 +20,15 @@
     <string>$(MARKETING_VERSION)</string>
     <key>CFBundleVersion</key>
     <string>$(CURRENT_PROJECT_VERSION)</string>
+    <key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleURLName</key>
+            <string>$(PRODUCT_BUNDLE_IDENTIFIER).widget</string>
+            <key>CFBundleURLSchemes</key>
+            <array><string>busapp</string></array>
+        </dict>
+    </array>
     <key>BackendBaseURL</key>
     <string>$(BACKEND_BASE_URL)</string>
     <key>BackendAPIToken</key>
