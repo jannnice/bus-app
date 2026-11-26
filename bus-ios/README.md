@@ -99,7 +99,8 @@ select a favourite. Small shows up to two services and medium shows up to four.
 Tap the arrow to request fresh estimates, or tap the widget body to open the
 stop's live arrivals in the app.
 
-The widget shows estimated arrival times and the snapshot's last update time.
+The widget shows estimated minutes until each bus arrives and the snapshot's
+last update time.
 iOS schedules automatic refreshes. Estimates expire after five minutes, and
 the widget can show a recent cached snapshot if a refresh fails. Manual
 requests for the same stop have a short cooldown.

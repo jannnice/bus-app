@@ -58,20 +58,31 @@ struct FavoriteStopWidgetView: View {
     }
 
     private var arrivals: some View {
-        HStack(spacing: 4) {
-            ForEach(entry.predictions.prefix(family == .systemSmall ? 2 : 4)) { prediction in
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(prediction.serviceNo)
-                        .font(.headline.monospacedDigit())
-                    Text(prediction.estimatedArrival, style: .time)
+        VStack(alignment: .leading, spacing: 3) {
+            Text("Arriving in")
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+
+            HStack(spacing: 4) {
+                ForEach(entry.predictions.prefix(family == .systemSmall ? 2 : 4)) { prediction in
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(prediction.serviceNo)
+                            .font(.headline.monospacedDigit())
+                            .accessibilityLabel(Text("Bus \(prediction.serviceNo)"))
+                        Text(.currentDate, format: .timer(
+                            countingDownIn: entry.date..<prediction.estimatedArrival,
+                            showsHours: false,
+                            maxFieldCount: 1,
+                            maxPrecision: .seconds(60)
+                        ))
                         .font(.caption2.monospacedDigit())
                         .foregroundStyle(.secondary)
+                    }
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.75)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .accessibilityElement(children: .combine)
                 }
-                .lineLimit(1)
-                .minimumScaleFactor(0.75)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .accessibilityElement(children: .ignore)
-                .accessibilityLabel(Text("Bus \(prediction.serviceNo), estimated at \(prediction.estimatedArrival, style: .time)"))
             }
         }
     }
@@ -84,11 +95,7 @@ struct FavoriteStopWidgetView: View {
                     Text(message(for: failure))
                         .lineLimit(1)
                 }
-                if entry.status == .arrivals, entry.failure == nil {
-                    Text("Est. · Updated \(fetchedAt, style: .time)")
-                } else {
-                    Text("Updated \(fetchedAt, style: .time)")
-                }
+                Text("Updated \(fetchedAt, style: .time)")
             }
             .font(.caption2)
             .foregroundStyle(.secondary)
