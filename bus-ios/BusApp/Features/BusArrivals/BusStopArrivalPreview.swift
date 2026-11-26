@@ -1,6 +1,6 @@
 import Foundation
 
-struct BusStopArrivalPreview: Equatable, Identifiable, Sendable {
+struct BusStopArrivalPreview: Codable, Equatable, Identifiable, Sendable {
     let serviceNo: String
     let estimatedArrival: Date
 
@@ -10,10 +10,12 @@ struct BusStopArrivalPreview: Equatable, Identifiable, Sendable {
 struct BusStopArrivalPreviewBuilder: Sendable {
     func previews(
         from services: [BusServiceArrival],
-        limit: Int = 4
+        limit: Int = 4,
+        after cutoff: Date = .distantPast
     ) -> [BusStopArrivalPreview] {
         services.compactMap { service in
-            guard let nextArrival = service.arrivals.compactMap(\.estimatedArrival).min() else {
+            let dates = service.arrivals.compactMap(\.estimatedArrival)
+            guard let nextArrival = dates.filter({ $0 > cutoff }).min() else {
                 return nil
             }
             return BusStopArrivalPreview(

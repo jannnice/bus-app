@@ -90,3 +90,22 @@ against Render. Use the normal **BusApp** scheme for local Debug development.
 
 The iOS app never talks to LTA DataMall directly and does not contain an LTA
 account key.
+
+## Home Screen widget
+
+Save a stop in the app, then add **Favourite Stop Arrivals** from the Home
+Screen widget gallery. Long-press the widget and choose **Edit Widget** to
+select a favourite. Small shows up to two services and medium shows up to four.
+Tap the arrow to request fresh estimates, or tap the widget body to open the
+stop's live arrivals in the app.
+
+The widget shows estimated arrival times and the snapshot's last update time.
+iOS schedules automatic refreshes. Estimates expire after five minutes, and
+the widget can show a recent cached snapshot if a refresh fails. Manual
+requests for the same stop have a short cooldown.
+
+For a device build, the signing team must have the
+`group.com.jannicesuciptono.BusApp` App Group enabled for both `BusApp` and
+`BusWidget`. The widget uses the same Debug and Hosted backend settings as the
+app. To check automatic refresh behaviour, test on a device outside the Xcode
+debugger.
